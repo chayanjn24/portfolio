@@ -42,8 +42,8 @@ const rows = projects.map((p) => ({ p, keys: workFilters.filter((k) => matches(p
         <span>No.</span><span>Project</span><span class="hide-sm">Stack</span><span class="right">Status</span>
       </div>
       {
-        rows.map(({ p, keys }) => (
-          <a href={projectHref(p)} data-label={p.title} class="row" data-keys={keys}>
+        rows.map(({ p, keys }, i) => (
+          <a href={projectHref(p)} data-label={p.title} class="row" data-keys={keys} data-reveal="fade" data-delay={Math.min(i, 6) * 70}>
             <span class:list={['num', { shipped: p.status === 'shipped' }]}>{p.num}</span>
             <div class="stack" style="gap:10px;min-width:0">
               <span class="p-title serif">{p.title}</span>
@@ -78,8 +78,8 @@ const rows = projects.map((p) => ({ p, keys: workFilters.filter((k) => matches(p
 
 <style>
   .work {
-    gap: clamp(40px, 5vw, 72px);
-    background: radial-gradient(50% 40% at 85% 0%, rgba(255, 77, 0, 0.12), rgba(11, 10, 9, 0) 70%);
+    gap: clamp(28px, 3.2vw, 48px);
+    background: radial-gradient(50% 40% at 85% 0%, rgba(var(--accent-rgb), 0.12), rgba(var(--bg-rgb), 0) 70%);
   }
   .top {
     display: grid;
@@ -89,7 +89,7 @@ const rows = projects.map((p) => ({ p, keys: workFilters.filter((k) => matches(p
   }
   .title {
     margin: 0;
-    font-size: clamp(88px, 15vw, 240px);
+    font-size: clamp(80px, 11vw, 176px);
     line-height: 0.82;
     letter-spacing: -0.03em;
   }

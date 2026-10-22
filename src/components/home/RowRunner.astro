@@ -3,7 +3,16 @@ import { game } from '@content/home';
 import { rich } from '@lib/text';
 import RevealLines from '@components/RevealLines.astro';
 
-const config = { badRows: game.badRows, ranks: game.ranks, startLabel: game.startLabel, rerunLabel: game.rerunLabel };
+const config = {
+  badRows: game.badRows,
+  ranks: game.ranks,
+  startLabel: game.startLabel,
+  rerunLabel: game.rerunLabel,
+  shieldLabel: game.shieldLabel,
+  shieldOn: game.shieldOn,
+  shieldUsed: game.shieldUsed,
+  promoted: game.promoted,
+};
 ---
 
 <section class="section" id="game" data-runner data-config={JSON.stringify(config)}>
@@ -15,6 +24,7 @@ const config = { badRows: game.badRows, ranks: game.ranks, startLabel: game.star
     <div class="intro" data-reveal="fade">
       <p class="serif">{game.intro}</p>
       <span class="label label--sm">{game.controls}</span>
+      <button type="button" class="mute label label--sm" data-mute aria-pressed="false">🔊 Sound on</button>
     </div>
   </div>
 
@@ -22,7 +32,7 @@ const config = { badRows: game.badRows, ranks: game.ranks, startLabel: game.star
     <canvas></canvas>
     <div class="overlay" data-overlay>
       <div class="stack over" data-over hidden>
-        <span class="label">Pipeline crashed · <span data-out="rows"></span> clean rows · <span data-out="dist"></span> m</span>
+        <span class="label crash-line">Pipeline crashed · <span class="nowrap"><span data-out="rows"></span> clean rows</span> · <span class="nowrap"><span data-out="dist"></span>&nbsp;m</span></span>
         <span class="score serif"><span data-out="score"></span> <em>pts</em></span>
         <span class="rank serif">Rank — <span data-out="rank"></span></span>
       </div>
@@ -71,6 +81,36 @@ const config = { badRows: game.badRows, ranks: game.ranks, startLabel: game.star
     cursor: pointer;
     touch-action: manipulation;
     user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    /* no blue flash on tap (phones), no focus ring on click; keyboard focus still shows */
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+  }
+  .stage:focus-visible {
+    outline: 1px solid var(--accent);
+    outline-offset: 4px;
+  }
+  .stage *,
+  .mute {
+    -webkit-tap-highlight-color: transparent;
+  }
+  /* while running, swipes on the game don't scroll the page by accident */
+  .stage:global(.is-running) {
+    touch-action: none;
+  }
+  .mute {
+    align-self: flex-start;
+    padding: 8px 14px;
+    border-radius: 99px;
+    border: 1px solid var(--line-strong);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .mute:hover {
+    border-color: var(--accent);
+    color: var(--text);
   }
   canvas {
     position: absolute;
@@ -88,7 +128,7 @@ const config = { badRows: game.badRows, ranks: game.ranks, startLabel: game.star
     justify-content: center;
     gap: 20px;
     padding: 24px;
-    background: rgba(11, 10, 9, 0.78);
+    background: rgba(var(--bg-rgb), 0.78);
     backdrop-filter: blur(4px);
     text-align: center;
   }
@@ -100,6 +140,12 @@ const config = { badRows: game.badRows, ranks: game.ranks, startLabel: game.star
   .over {
     align-items: center;
     gap: 20px;
+  }
+  .crash-line {
+    text-wrap: balance;
+  }
+  .nowrap {
+    white-space: nowrap;
   }
   .score {
     font-size: clamp(64px, 9vw, 128px);

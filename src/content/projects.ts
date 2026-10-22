@@ -1,7 +1,8 @@
 /**
  * PROJECTS — every project on the site.
  *
- * - Order here = order on the Work page and the "Next project" chain.
+ * - Order here = order on the Work page and the "Next project" chain, and sets the numbers:
+ *   the first project is 01, the next 02, and so on. In copy, {num:<id>} prints a project's number.
  * - status: 'shipped' (case study page), 'next' (up next), 'queued'.
  * - To ship a project: set status to 'shipped', add `results`, `links`, and a `cover` image
  *   (drop the image into /public/images/projects/). Remove `when`/`done` if you like.
@@ -9,10 +10,39 @@
  */
 import type { Project } from './types';
 
-export const projects: Project[] = [
+const list: Omit<Project, 'num'>[] = [
+  {
+    id: 'tallyline',
+    status: 'shipped',
+    title: 'Tallyline',
+    kind: 'Analytics product · synthetic data',
+    cats: ['BI', 'Analytics eng'],
+    tags: ['Python', 'DuckDB', 'SQL', 'FastAPI', 'Chart.js', 'pytest'],
+    summary:
+      'An analytics workspace for a programmatic ad exchange — live KPIs, six drill-down levels, and anomaly detection that names the likely cause.',
+    question:
+      'Can an ad exchange’s analytics workspace spot incidents on its own — and say which step of the funnel broke, not just that revenue fell?',
+    steps: [
+      'Seeded generator simulates 12 buyers, 10 publishers and about 150 deals hour by hour, with planted incidents (outages, traffic drops, bot-like spikes, price cuts) and a hidden answer key.',
+      'DuckDB star schema with rollups; each query reads the smallest table that can answer it, so a typical 31-day query takes 5–30 ms.',
+      'Detector written in SQL: robust z-scores (median and MAD) against the same hour of the week over four weeks, then gaps-and-islands to merge hours into incidents and group knock-on alerts.',
+      'FastAPI read-only JSON API with parameters bound, never pasted, into SQL; a framework-free front end of about 30 ES modules and Chart.js.',
+      'Every rate (eCPM, fill, win rate) computed once from additive sums, so totals are never an average of averages; 31 tests and CI check that every breakdown reconciles to the total.',
+    ],
+    results: [
+      ['100%', 'of planted incidents caught, across 3 seeds'],
+      ['94–100%', 'precision of root-cause alerts'],
+      ['5–30 ms', 'typical 31-day query'],
+    ],
+    links: [
+      { label: 'Live demo', href: 'https://tallyline.onrender.com' },
+      { label: 'GitHub repo', href: 'https://github.com/chayanjn24/tallyline' },
+    ],
+    cover: '/images/projects/tallyline.png',
+    coverPlaceholder: 'Tallyline overview screenshot',
+  },
   {
     id: 'credit-risk',
-    num: '01',
     status: 'shipped',
     title: 'Credit Risk & Loan Default',
     kind: 'Banking analytics',
@@ -36,42 +66,51 @@ export const projects: Project[] = [
       { label: 'GitHub repo', href: 'https://github.com/chayanjn24/credit-risk-analysis' },
       { label: 'Tableau Public', href: 'https://public.tableau.com/app/profile/chayan.gulgulia/vizzes' },
     ],
-    cover: '/images/projects/credit-risk.png',
+    cover: '/images/projects/tableau-portfolio.png',
     coverPlaceholder: 'Tableau dashboard screenshot',
-  },
-  {
-    id: 'expense-ai',
-    num: '02',
-    status: 'shipped',
-    title: 'AI Expense Analytics',
-    kind: 'ML & data science · 2025',
-    cats: ['ML', 'Finance'],
-    tags: ['Python', 'Isolation Forest', 'KMeans', 'ARIMA', 'Plotly'],
-    summary: 'Finds fraud, spending personas and next month’s bill hiding in raw transactions.',
-    question: 'What can raw expense transactions tell us about fraud, habits and future spend?',
-    steps: [
-      'Analysed expense transactions in Python for patterns and anomalies.',
-      'Isolation Forest flags transactions unlike the rest — fraud candidates.',
-      'KMeans segments spenders by behaviour.',
-      'ARIMA forecasts upcoming spend; reports with key metrics generate automatically.',
-      'Interactive Plotly dashboards for trends and budget insights.',
-    ],
-    results: [
-      ['3', 'models: anomaly, segments, forecast'],
-      ['Auto', 'metric reporting'],
-      ['Plotly', 'interactive dashboards'],
-    ],
-    links: [
+    dashboards: [
       {
-        label: 'Open the notebook',
-        href: 'https://colab.research.google.com/drive/1s0WEnFtEE76BZecVxr-QF1KT-m9hFuSq?usp=sharing',
+        label: 'Portfolio model',
+        view: 'CreditDefaultRisk-PortfolioModel/CreditDefaultRiskPortfolioModel',
+        preview: '/images/projects/tableau-portfolio.png',
+        ratio: 1472 / 908,
+      },
+      {
+        label: 'Risk drivers',
+        view: 'RiskDriversDeepDive/RiskDriversDeepDive',
+        preview: '/images/projects/tableau-drivers.png',
+        ratio: 1440 / 1112,
       },
     ],
-    coverPlaceholder: 'Plotly dashboard screenshot',
+  },
+  {
+    id: 'expense-tracker',
+    status: 'shipped',
+    title: 'Expense Tracker',
+    kind: 'Personal finance · ML',
+    cats: ['ML', 'Finance', 'BI'],
+    tags: ['Python', 'pandas', 'scikit-learn', 'statsmodels', 'Plotly', 'Google Sheets'],
+    summary:
+      'My own spending, read straight from a Google Sheet — budget, forecast and alerts — plus an ML lab that tests four models against the simple rules.',
+    question:
+      'Where does my money actually go each month — and does machine learning beat plain rules at categorizing, forecasting and spotting the unusual?',
+    steps: [
+      'Reads 815 of my own transactions from a Google Sheet, or a sanitized demo copy that is safe to share (names pseudonymised, amounts shifted).',
+      'Separates real spending from income, transfers and refunds; budget vs. actual per category; subscriptions and spending patterns.',
+      'Rules first: unusual payments against each category’s median, and a run-rate month-end forecast, both checked on past months.',
+      'ML lab: a TF-IDF + logistic regression categorizer, a weekly SARIMA forecast on daily spend, Isolation Forest scores and KMeans merchant groups.',
+      'Every model is tested against its rule on data it hasn’t seen, and kept only if it wins — KMeans didn’t, and the notebook says so.',
+    ],
+    results: [
+      ['59%', 'of an unseen month categorized right by the model, vs 45% for the rules'],
+      ['8%', 'SARIMA month-end error on day 20, vs 15% for the run-rate'],
+      ['815', 'real transactions, sanitized for the shareable demo'],
+    ],
+    links: [{ label: 'Open the notebook', href: 'https://colab.research.google.com/drive/1bC1_w7qK4CpFu_IVKJXIYP90GaAki7WS?usp=sharing' }],
+    coverPlaceholder: 'Expense Tracker dashboard screenshot',
   },
   {
     id: 'campus-crave',
-    num: '03',
     status: 'shipped',
     title: 'Campus Crave',
     kind: 'Mobile app',
@@ -94,7 +133,6 @@ export const projects: Project[] = [
   },
   {
     id: 'recon-lakehouse',
-    num: '04',
     status: 'next',
     when: 'Nov 2026',
     title: 'Reconciliation Lakehouse',
@@ -114,7 +152,6 @@ export const projects: Project[] = [
   },
   {
     id: 'qcom-dbt',
-    num: '05',
     status: 'queued',
     when: 'Nov 2026',
     title: 'Quick-Commerce Funnel',
@@ -133,7 +170,6 @@ export const projects: Project[] = [
   },
   {
     id: 'fraud-cost',
-    num: '06',
     status: 'queued',
     when: 'Nov 2026',
     title: 'Fraud, Priced Right',
@@ -151,7 +187,6 @@ export const projects: Project[] = [
   },
   {
     id: 'trek-planner',
-    num: '07',
     status: 'queued',
     when: 'Nov 2026',
     title: 'Sahyadri Trek Planner',
@@ -170,7 +205,6 @@ export const projects: Project[] = [
   },
   {
     id: 'nifty-risk',
-    num: '08',
     status: 'queued',
     when: 'Dec 2026',
     title: 'Nifty 50 Risk Lab',
@@ -189,25 +223,25 @@ export const projects: Project[] = [
   },
   {
     id: 'supply-chain',
-    num: '09',
     status: 'queued',
     when: 'Dec 2026',
-    title: 'Late Delivery Lab',
-    kind: 'Supply chain',
-    cats: ['ML', 'BI'],
-    tags: ['BigQuery ML', 'Looker Studio', 'PuLP'],
-    summary: 'What drives late deliveries, and which reorder policy balances service against holding cost.',
-    question: 'What drives late deliveries, and what reorder policy balances service level against holding cost?',
+    title: 'Fulfillment Reconciliation',
+    kind: 'Supply chain · Spark',
+    cats: ['Big data', 'BI'],
+    tags: ['PySpark', 'Spark SQL', 'pandas', 'Plotly'],
+    summary: 'Scheduled vs. actual delivery, reconciled like a billing close: where fulfillment slips, why, and what it costs.',
+    question:
+      'Where does actual fulfillment drift from schedule — by warehouse, region, shipping mode and category — and is the late-delivery risk controllable or structural?',
     steps: [
-      'Delivery KPIs in BigQuery.',
-      'Late-delivery model using order-time features only.',
-      'Safety stock, EOQ, Monte Carlo policy simulation.',
+      'DataCo Smart Supply Chain orders loaded into PySpark; schema explored with Spark SQL.',
+      'Scheduled vs. actual shipping days reconciled per order, with variances by warehouse, region, shipping mode and product category.',
+      'Late-delivery risk by market, segment and priority, split into controllable (shipping mode) and structural (region, distance) causes.',
+      'Dollar impact of late and at-risk orders, and the few segments that would move it most.',
     ],
-    done: 'KPIs, BQML model, inventory policy.',
+    done: 'Variance tables tie back to order totals; notebook and report published; runs on Databricks unchanged.',
   },
   {
     id: 'music-pop',
-    num: '10',
     status: 'queued',
     when: 'Dec 2026',
     title: 'What Makes a Hit',
@@ -226,7 +260,6 @@ export const projects: Project[] = [
   },
   {
     id: 'movie-recs',
-    num: '11',
     status: 'queued',
     when: 'Dec 2026',
     title: 'Next Movie Engine',
@@ -245,7 +278,6 @@ export const projects: Project[] = [
   },
   {
     id: 'ipl-wp',
-    num: '12',
     status: 'queued',
     when: 'Jan 2027',
     title: 'IPL Win Probability',
@@ -263,7 +295,6 @@ export const projects: Project[] = [
   },
   {
     id: 'hcp-targeting',
-    num: '13',
     status: 'queued',
     when: 'Jan 2027',
     title: 'Prescriber Targeting',
@@ -281,6 +312,9 @@ export const projects: Project[] = [
     done: 'Dashboard plus case memo.',
   },
 ];
+
+/** Numbers come from the order above: 01, 02, … */
+export const projects: Project[] = list.map((p, i) => ({ ...p, num: String(i + 1).padStart(2, '0') }));
 
 /**
  * Filter pills on the Work page. 'All', 'Shipped' and 'Queue' are built in;

@@ -17,7 +17,7 @@ import RevealLines from '@components/RevealLines.astro';
       offTheClock.items.map((h) => (
         <a href="/about" data-label="About" class="row">
           <span class="name serif">{h.name}</span>
-          <span class="detail">{h.detail}</span>
+          <span class="detail">{fill(h.detail)}</span>
         </a>
       ))
     }

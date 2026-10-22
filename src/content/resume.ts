@@ -131,6 +131,21 @@ export const resume = {
 
   projects: [
     {
+      title: 'Tallyline',
+      id: 'tallyline',
+      stack: 'Python · DuckDB · SQL · FastAPI · Chart.js · pytest',
+      when: '2026',
+      links: [
+        { label: 'Live demo', href: 'https://tallyline.onrender.com' },
+        { label: 'GitHub', href: 'https://github.com/chayanjn24/tallyline' },
+      ],
+      points: [
+        'Built an *analytics workspace for a programmatic ad exchange* on synthetic data: live KPIs, a full bid funnel, six drill-down levels, comparisons and printable reports.',
+        'Wrote the anomaly detector in SQL — robust z-scores against the same hour of the week, then gaps-and-islands to merge incidents — catching *100% of planted incidents* across three seeds at 94–100% precision.',
+        'Modelled the data as a DuckDB star schema with rollups (typical 31-day query: 5–30 ms), served by a read-only FastAPI; 31 tests check that every breakdown reconciles to the total.',
+      ],
+    },
+    {
       title: 'Credit Risk & Loan Default Analytics',
       id: 'credit-risk',
       stack: 'Snowflake SQL · Python · Scikit-learn · XGBoost · Tableau',
@@ -146,14 +161,15 @@ export const resume = {
       ],
     },
     {
-      title: 'Expense Analytics & Anomaly Detection',
-      id: 'expense-ai',
-      stack: 'Python · Isolation Forest · KMeans · ARIMA · Plotly',
-      when: '2025',
-      links: [{ label: 'Notebook', href: 'https://colab.research.google.com/drive/1s0WEnFtEE76BZecVxr-QF1KT-m9hFuSq?usp=sharing' }],
+      title: 'Expense Tracker',
+      id: 'expense-tracker',
+      stack: 'Python · pandas · scikit-learn · statsmodels · Plotly',
+      when: '2026',
+      links: [{ label: 'Notebook', href: 'https://colab.research.google.com/drive/1bC1_w7qK4CpFu_IVKJXIYP90GaAki7WS?usp=sharing' }],
       points: [
-        'Flagged *anomalous transactions* with Isolation Forest, segmented spending behaviour with KMeans, and forecast monthly spend with ARIMA.',
-        'Generated an automated expense report with budget recommendations, backed by interactive Plotly dashboards.',
+        'Built a Colab notebook on *815 of my own transactions* (sanitized for the shareable demo): savings rate, budget vs. actual, subscriptions, unusual-payment alerts and a month-end forecast.',
+        'Benchmarked ML against the rules on an unseen month: a *TF-IDF + logistic regression categorizer* got 59% right vs 45% (macro F1 0.49 vs 0.39), and a *weekly SARIMA* cut month-end forecast error to 8% from 15% by day 20.',
+        'Compared Isolation Forest anomaly scores with the rule-based alerts (agreeing on 3 of 8, surfacing 5 more), and reported KMeans merchant groups as too weak to use (silhouette 0.26).',
       ],
     },
     {
@@ -177,7 +193,7 @@ export const resume = {
 
   skills: [
     { group: 'SQL & Python', items: 'SQL (joins, CTEs, window functions, query optimisation — MySQL, Redshift, AWS Athena, Snowflake), Python (Pandas, NumPy, Scikit-learn)' },
-    { group: 'Analysis & modelling', items: 'Data reconciliation and validation, root-cause and variance analysis, cohort analysis, A/B comparison, anomaly detection (Isolation Forest), segmentation (KMeans), forecasting (ARIMA), logistic regression, XGBoost' },
+    { group: 'Analysis & modelling', items: 'Data reconciliation and validation, root-cause and variance analysis, cohort analysis, A/B comparison, forecasting (SARIMA, baselines), anomaly detection (Isolation Forest, robust z-scores), text classification (TF-IDF), clustering (KMeans), logistic regression, XGBoost, model evaluation (AUC, F1, precision and recall)' },
     { group: 'BI & reporting', items: 'Power BI (DAX), Tableau, Looker, Metabase, KPI dashboards, Excel (Power Query, pivot tables, XLOOKUP, VBA), Google Sheets, PowerPoint, ETL automation' },
     { group: 'Business analysis', items: 'Requirements gathering, Jira ticketing, user acceptance testing (UAT), stakeholder management, leadership reporting' },
     { group: 'Ad tech', items: 'RTB, header bidding (Prebid), PMP deals, OpenRTB 2.5/2.6, VAST/VPAID, ads.txt and schain, IVT and brand safety, yield optimisation; Xandr Invest and Beeswax (hands-on), Amazon DSP (certified), Magnite, PubMatic, Xandr Monetize, Cedato' },

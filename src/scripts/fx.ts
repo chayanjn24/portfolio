@@ -31,7 +31,9 @@ document.addEventListener(
       const target = document.querySelector(url.hash);
       if (target) {
         e.preventDefault();
-        lenis ? lenis.scrollTo(target as HTMLElement) : target.scrollIntoView();
+        // honour scroll-margin-top (set by QuickJump) so sticky bars don't cover the heading
+        const offset = -(parseFloat(getComputedStyle(target).scrollMarginTop) || 0);
+        lenis ? lenis.scrollTo(target as HTMLElement, { offset }) : target.scrollIntoView();
       }
       return;
     }
@@ -62,6 +64,7 @@ const io = new IntersectionObserver(
       const el = (en.target as HTMLElement & { __reveal?: HTMLElement }).__reveal ?? en.target;
       el.classList.add('is-in');
       io.unobserve(en.target);
+      el.querySelectorAll<HTMLElement>('.stat__value').forEach(countUp);
     }),
   { threshold: 0.12, rootMargin: '0px 0px -6% 0px' },
 );
@@ -78,6 +81,31 @@ document.querySelectorAll<HTMLElement>('[data-reveal]').forEach((el) => {
     io.observe(el);
   }
 });
+
+// ---------- stat count-up ----------
+// The markup holds the final value, so without JS (or with reduced motion) it
+// just reads correctly. Only the leading number animates; prefixes and
+// suffixes ($, +, K+, %, h) stay put. Ranges like "7–8h" are left alone.
+function countUp(el: HTMLElement) {
+  const m = /^(\D*?)(\d+(?:\.\d+)?)(\D*)$/.exec(el.textContent ?? '');
+  if (reduce || !m || el.dataset.counted) return;
+  el.dataset.counted = '1';
+  const [, pre, num, post] = m;
+  const end = parseFloat(num);
+  const dp = num.split('.')[1]?.length ?? 0;
+  const delay = parseFloat(getComputedStyle(el.closest('[data-reveal]') ?? el).transitionDelay) * 1000 || 0;
+  const dur = 1400;
+  let t0 = 0;
+  const tick = (t: number) => {
+    t0 ||= t;
+    const k = Math.min(1, (t - t0) / dur);
+    const e = 1 - Math.pow(1 - k, 4);
+    el.textContent = pre + (end * e).toFixed(dp) + post;
+    if (k < 1) requestAnimationFrame(tick);
+  };
+  el.textContent = pre + (0).toFixed(dp) + post;
+  setTimeout(() => requestAnimationFrame(tick), delay);
+}
 
 // ---------- magnetic buttons ----------
 if (!reduce && finePointer) {

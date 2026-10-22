@@ -47,6 +47,19 @@ export interface Project {
   cover?: string;
   /** Placeholder text shown until `cover` is set. */
   coverPlaceholder?: string;
+  /** Live Tableau Public dashboards, embedded on the project page (load on click). */
+  dashboards?: Dashboard[];
+}
+
+export interface Dashboard {
+  /** Tab label, e.g. 'Portfolio model'. */
+  label: string;
+  /** Tableau Public view path: '<Workbook>/<View>' from public.tableau.com/views/<Workbook>/<View>. */
+  view: string;
+  /** Still preview shown before it loads, inside /public. */
+  preview: string;
+  /** Width / height of the dashboard, e.g. 1472 / 908 — keeps the frame the right shape. */
+  ratio: number;
 }
 
 export interface NavLink {

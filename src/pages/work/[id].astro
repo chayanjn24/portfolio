@@ -2,6 +2,8 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ImageSlot from '@components/ImageSlot.astro';
 import StatusBadge from '@components/StatusBadge.astro';
+import TableauEmbed from '@components/TableauEmbed.astro';
+import QuickJump from '@components/QuickJump.astro';
 import { projects } from '@content/projects';
 import { site } from '@content/site';
 import type { Project } from '@content/types';
@@ -18,6 +20,20 @@ interface Props {
 const { p } = Astro.props;
 const isShipped = p.status === 'shipped';
 const next = nextProject(p);
+const hasFigure = isShipped;
+// Section letters follow what's on the page.
+const letters = 'ABCDEF';
+let n = 0;
+const L = () => `(${letters[n++]})`;
+// Quick-jump items, lettered in the same order as the sections below.
+const jump = [
+  { id: 'question', name: 'The question', on: true },
+  { id: 'approach', name: isShipped ? 'What I did' : 'The plan', on: true },
+  { id: 'results', name: 'Results', on: isShipped },
+  { id: 'live', name: 'Explore it live', on: !!p.dashboards?.length },
+]
+  .filter((s) => s.on)
+  .map((s, i) => ({ id: s.id, label: `(${letters[i]}) ${s.name}` }));
 ---
 
 <BaseLayout title={p.title} description={p.summary} footerCta={false}>
@@ -44,26 +60,46 @@ const next = nextProject(p);
         <span class="small">{isShipped ? 'Shipped · live' : p.when}</span>
         {p.hobby && <a href="/about" data-label="About" class="fuel">Fuelled by {p.hobby} ↗</a>}
       </div>
+      {
+        p.links && p.links.length > 0 && (
+          <div class="col">
+            <span class="label label--sm label--faint">Links</span>
+            <div class="meta-links">
+              {p.links.map((l) => (
+                <a href={l.href} target="_blank" rel="noopener" class="meta-link">
+                  {l.label} ↗
+                </a>
+              ))}
+            </div>
+          </div>
+        )
+      }
     </div>
   </section>
 
-  {
-    isShipped && (
-      <section class="cover-wrap">
-        <div data-reveal="fade">
-          <ImageSlot src={p.cover} alt={`${p.title} cover`} placeholder={p.coverPlaceholder ?? p.title} ratio="16/8" class="cover" loading="eager" />
-        </div>
-      </section>
-    )
-  }
+  <QuickJump items={jump} />
 
   <section class="case">
-    <div class="stack" style="gap:20px">
-      <span class="label">(A) The question</span>
+    <div class="stack question-col" id="question" style="gap:20px">
+      <span class="label">{L()} The question</span>
       <p class="question serif" data-reveal="fade">{p.question}</p>
+      {
+        hasFigure && (
+          <figure class="figure" data-reveal="wipe">
+            {p.cover ? (
+              <button type="button" class="zoom" data-zoom aria-label={`Enlarge the ${p.title} screenshot`}>
+                <ImageSlot src={p.cover} alt={`${p.title} screenshot`} placeholder={p.coverPlaceholder ?? p.title} ratio="16/10" natural loading="eager" />
+                <span class="zoom-hint label label--sm">⤢ Click to enlarge</span>
+              </button>
+            ) : (
+              <ImageSlot placeholder={p.coverPlaceholder ?? p.title} ratio="16/10" />
+            )}
+          </figure>
+        )
+      }
     </div>
-    <div class="stack" style="gap:20px">
-      <span class="label">(B) {isShipped ? 'What I did' : 'The plan'}</span>
+    <div class="stack" id="approach" style="gap:20px">
+      <span class="label">{L()} {isShipped ? 'What I did' : 'The plan'}</span>
       <ol class="steps">
         {
           p.steps.map((s, i) => (
@@ -79,8 +115,8 @@ const next = nextProject(p);
 
   {
     isShipped && (
-      <section class="results">
-        <span class="label">(C) Results</span>
+      <section class="results" id="results">
+        <span class="label">{L()} Results</span>
         <div class="stats">
           {(p.results ?? []).map(([value, label], i) => (
             <div class="stat" data-reveal="fade" data-delay={i * 100}>
@@ -99,6 +135,8 @@ const next = nextProject(p);
       </section>
     )
   }
+
+  {p.dashboards && p.dashboards.length > 0 && <TableauEmbed id="live" dashboards={p.dashboards} label={`${L()} Explore it live`} />}
 
   {
     !isShipped && (
@@ -120,18 +158,35 @@ const next = nextProject(p);
     )
   }
 
+  {
+    p.cover && (
+      <dialog class="lightbox" data-lightbox aria-label={`${p.title} screenshot`}>
+        <img src={p.cover} alt={`${p.title} screenshot, full size`} />
+        <button type="button" class="close label" data-close aria-label="Close">Close ✕</button>
+      </dialog>
+    )
+  }
+
   <a href={projectHref(next)} data-label={next.title} class="next">
     <span class="label">Next project — {next.num}</span>
     <span class="next-title serif">{next.title} →</span>
   </a>
 </BaseLayout>
 
+<script>
+  // Click the screenshot to see it full-screen; Esc, the button or a click outside closes it.
+  const dialog = document.querySelector<HTMLDialogElement>('[data-lightbox]');
+  document.querySelector('[data-zoom]')?.addEventListener('click', () => dialog?.showModal());
+  dialog?.addEventListener('click', (e) => {
+    if (e.target === dialog || (e.target as Element).closest('[data-close]')) dialog.close();
+  });
+</script>
+
 <style>
   .hero {
-    padding-top: clamp(130px, 17vh, 190px);
-    padding-bottom: clamp(48px, 6vw, 80px);
-    gap: clamp(32px, 4vw, 56px);
-    background: radial-gradient(50% 50% at 15% 0%, rgba(255, 77, 0, 0.12), rgba(11, 10, 9, 0) 70%);
+    padding-bottom: clamp(28px, 3.5vw, 48px);
+    gap: clamp(24px, 3vw, 40px);
+    background: radial-gradient(50% 50% at 15% 0%, rgba(var(--accent-rgb), 0.12), rgba(var(--bg-rgb), 0) 70%);
   }
   .topbar {
     display: flex;
@@ -147,7 +202,7 @@ const next = nextProject(p);
   }
   .title {
     margin: 0;
-    font-size: clamp(60px, 10vw, 168px);
+    font-size: clamp(52px, 8vw, 128px);
     line-height: 0.88;
     letter-spacing: -0.025em;
     text-wrap: balance;
@@ -195,18 +250,109 @@ const next = nextProject(p);
     color: var(--accent);
   }
 
-  .cover-wrap {
-    padding: 0 var(--gutter);
-  }
-  .cover-wrap :global(.cover) {
-    min-height: 260px;
-  }
-
   .case {
-    padding: clamp(80px, 10vw, 150px) var(--gutter);
+    padding: clamp(28px, 3.5vw, 48px) var(--gutter) clamp(56px, 7vw, 112px);
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr));
     gap: clamp(40px, 6vw, 96px);
+  }
+  .question-col {
+    min-width: 0;
+  }
+  .figure {
+    margin: 12px 0 0;
+  }
+  .zoom {
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: zoom-in;
+    text-align: left;
+  }
+  .zoom-hint {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    padding: 6px 10px;
+    border-radius: 99px;
+    background: rgba(var(--bg-rgb), 0.78);
+    color: var(--text);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .zoom:hover .zoom-hint,
+  .zoom:focus-visible .zoom-hint {
+    opacity: 1;
+  }
+  @media (hover: none) {
+    .zoom-hint {
+      opacity: 1;
+    }
+  }
+  .lightbox {
+    max-width: none;
+    max-height: none;
+    width: 100vw;
+    height: 100dvh;
+    margin: 0;
+    padding: clamp(16px, 4vw, 48px);
+    border: 0;
+    background: rgba(var(--bg-rgb), 0.94);
+    color: var(--text);
+  }
+  .lightbox[open] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .lightbox::backdrop {
+    background: transparent;
+  }
+  .lightbox img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 4px;
+    border: 1px solid var(--line);
+  }
+  .close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    min-height: 40px;
+    padding: 0 16px;
+    border-radius: 99px;
+    border: 1px solid var(--line-strong);
+    background: var(--bg);
+    color: var(--text);
+    cursor: pointer;
+  }
+  .meta-links {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .meta-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 0 14px;
+    border-radius: 99px;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: all 0.3s;
+  }
+  .meta-link:hover {
+    background: var(--accent);
+    color: var(--bg);
   }
   .question {
     margin: 0;
@@ -240,7 +386,7 @@ const next = nextProject(p);
   }
 
   .results {
-    padding: 0 var(--gutter) clamp(80px, 10vw, 150px);
+    padding: 0 var(--gutter) clamp(56px, 7vw, 112px);
     display: flex;
     flex-direction: column;
     gap: 40px;
@@ -255,7 +401,7 @@ const next = nextProject(p);
   }
 
   .status-wrap {
-    padding: 0 var(--gutter) clamp(80px, 10vw, 150px);
+    padding: 0 var(--gutter) clamp(56px, 7vw, 112px);
   }
   .status {
     border: 1px dashed var(--line-strong);
@@ -265,7 +411,7 @@ const next = nextProject(p);
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
     gap: 28px;
     align-items: end;
-    background: radial-gradient(60% 100% at 100% 100%, rgba(255, 77, 0, 0.12), rgba(11, 10, 9, 0));
+    background: radial-gradient(60% 100% at 100% 100%, rgba(var(--accent-rgb), 0.12), rgba(var(--bg-rgb), 0));
   }
   .when {
     font-size: clamp(48px, 5vw, 80px);

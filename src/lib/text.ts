@@ -14,13 +14,15 @@ export const counts: Record<string, number> = {
   hobbies: hobbies.length,
 };
 
-/** Replace {shipped}, {total:word}, … with live counts. Unknown tokens are left as-is. */
+/** Replace {shipped}, {total:word}, {num:trek-planner}, … with live values. Unknown tokens are left as-is. */
 export function fill(s: string): string {
-  return s.replace(/\{(\w+)(:word)?\}/g, (m, key: string, word?: string) => {
-    const n = counts[key];
-    if (n === undefined) return m;
-    return word ? (WORDS[n] ?? String(n)) : String(n);
-  });
+  return s
+    .replace(/\{num:([\w-]+)\}/g, (m, id: string) => projects.find((p) => p.id === id)?.num ?? m)
+    .replace(/\{(\w+)(:word)?\}/g, (m, key: string, word?: string) => {
+      const n = counts[key];
+      if (n === undefined) return m;
+      return word ? (WORDS[n] ?? String(n)) : String(n);
+    });
 }
 
 /** Escape HTML, fill counters, and turn *text* into <em>text</em>. Use with set:html. */

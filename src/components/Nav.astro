@@ -5,7 +5,7 @@ import { pad2 } from '@lib/text';
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 const isActive = (href: string) => (href === '/' ? path === '/' : path === href || path.startsWith(href + '/'));
 const links = nav.map((l, i) => ({ ...l, n: pad2(i + 1), active: isActive(l.href) }));
-const clock = `${site.clock.city} · <span data-clock data-tz="${site.clock.timeZone}">--:--</span> ${site.clock.suffix}`;
+const clock = `<span data-clock data-tz="${site.clock.timeZone}">--:--</span> ${site.clock.suffix}`;
 ---
 
 <header class="nav no-print" data-nav>
@@ -16,13 +16,35 @@ const clock = `${site.clock.city} · <span data-clock data-tz="${site.clock.time
       links.map((l) => (
         <a href={l.href} data-label={l.label} class:list={['link', { 'is-active': l.active }]} aria-current={l.active ? 'page' : undefined}>
           <span class="dot" />
-          {l.label}
+          <span class="lbl">{l.label}</span>
           <sup>{l.n}</sup>
         </a>
       ))
     }
   </nav>
-  <div class="clock"><span class="pulse"></span><span set:html={clock} /></div>
+  <div class="status" data-status data-spotify={site.spotify ? 'on' : undefined}>
+    <span class="pulse" data-pulse></span>
+    <a class="np" data-np target="_blank" rel="noopener" hidden>
+      <span class="disc"><img class="cover" data-np-cover alt="" width="24" height="24" hidden /></span>
+      <span class="np-when" data-np-when></span>
+      <span class="np-text" data-np-text></span>
+      <span class="card" aria-hidden="true">
+        <span class="card-in">
+          <img class="card-art" data-np-art alt="" />
+          <span class="card-k"><span class="live-dot"></span><span data-np-kind></span></span>
+          <strong class="card-t" data-np-title></strong>
+          <span class="card-a" data-np-artist></span>
+          <span class="card-open">Open in Spotify ↗</span>
+        </span>
+      </span>
+    </a>
+    <span class="city" data-city>{site.clock.city} ·</span>
+    
+    <span class="time" set:html={clock} />
+    <button class="theme" type="button" aria-label="Light mode" aria-pressed="false" data-theme-btn>
+      <svg class="ti" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><g class="ti-sun"><circle cx="8" cy="8" r="3" /><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6L13 13M3 13l1.4-1.4M11.6 4.4L13 3" /></g><path class="ti-moon" d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1Z" /></svg>
+    </button>
+  </div>
 
   <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mobile-menu" data-menu-btn>Menu</button>
 </header>
@@ -36,7 +58,10 @@ const clock = `${site.clock.city} · <span data-clock data-tz="${site.clock.time
       </a>
     ))
   }
-  <span class="label overlay-meta"><span set:html={clock} /> · {site.availability}</span>
+  <button class="theme theme--overlay label" type="button" aria-label="Light mode" aria-pressed="false" data-theme-btn>
+    <svg class="ti" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><g class="ti-sun"><circle cx="8" cy="8" r="3" /><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3 3l1.4 1.4M11.6 11.6L13 13M3 13l1.4-1.4M11.6 4.4L13 3" /></g><path class="ti-moon" d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1Z" /></svg><span data-theme-text>Light mode</span>
+  </button>
+  <span class="label overlay-meta"><span data-np-overlay>{site.clock.city} · </span><span set:html={clock} /> · {site.availability}</span>
 </div>
 
 <script>
@@ -57,6 +82,39 @@ const clock = `${site.clock.city} · <span data-clock data-tz="${site.clock.time
   btn.addEventListener('click', () => setOpen(!header.classList.contains('is-open')));
   window.matchMedia('(max-width: 860px)').addEventListener('change', () => setOpen(false));
 
+  // Light/dark toggle. Dark is the default; the choice is saved and re-applied before paint by BaseLayout.
+  const root = document.documentElement;
+  const themeBtns = document.querySelectorAll<HTMLButtonElement>('[data-theme-btn]');
+  const syncTheme = () => {
+    const light = root.dataset.theme === 'light';
+    const next = light ? 'Dark mode' : 'Light mode';
+    themeBtns.forEach((b) => {
+      b.setAttribute('aria-pressed', String(light));
+      b.setAttribute('aria-label', next);
+      b.title = next;
+      const t = b.querySelector('[data-theme-text]');
+      if (t) t.textContent = next;
+    });
+    document.querySelector('[data-theme-color]')?.setAttribute('content', light ? '#F4F1EA' : '#0B0A09');
+  };
+  let fadeT = 0;
+  themeBtns.forEach((b) =>
+    b.addEventListener('click', () => {
+      const light = root.dataset.theme !== 'light';
+      root.classList.add('theme-fade');
+      if (light) root.dataset.theme = 'light';
+      else delete root.dataset.theme;
+      try {
+        localStorage.setItem('chayan-theme', light ? 'light' : 'dark');
+      } catch {}
+      syncTheme();
+      window.dispatchEvent(new Event('themechange'));
+      clearTimeout(fadeT);
+      fadeT = window.setTimeout(() => root.classList.remove('theme-fade'), 450);
+    }),
+  );
+  syncTheme();
+
   const tick = () => {
     document.querySelectorAll<HTMLElement>('[data-clock]').forEach((el) => {
       try {
@@ -66,6 +124,53 @@ const clock = `${site.clock.city} · <span data-clock data-tz="${site.clock.time
   };
   tick();
   setInterval(tick, 15000);
+
+  // Spotify now playing (falls back to the last track played; clock only if not set up).
+  const status = document.querySelector<HTMLElement>('[data-status]')!;
+  if (status.dataset.spotify) {
+    const np = status.querySelector<HTMLAnchorElement>('[data-np]')!;
+    const when = status.querySelector<HTMLElement>('[data-np-when]')!;
+    const text = status.querySelector<HTMLElement>('[data-np-text]')!;
+    const cover = status.querySelector<HTMLImageElement>('[data-np-cover]')!;
+    const $ = (k: string) => status.querySelector<HTMLElement>(`[data-np-${k}]`)!;
+    const overlay = document.querySelector<HTMLElement>('[data-np-overlay]');
+    const update = async () => {
+      if (document.hidden) return;
+      try {
+        const d = await (await fetch('/api/now-playing')).json();
+        if (!d.configured || !d.title) return;
+        const song = `${d.title} — ${d.artist}`;
+        np.href = d.url;
+        np.title = `${d.playing ? 'Now playing' : 'Last played'} on Spotify: ${song}`;
+        np.classList.toggle('is-playing', d.playing);
+        when.textContent = d.playing ? '' : 'Last played ';
+        text.textContent = d.title.replace(/\s*[\(\[]feat[^\)\]]*[\)\]]/i, '');
+        cover.hidden = !d.cover;
+        if (d.cover) cover.src = d.cover;
+        ($('art') as HTMLImageElement).src = d.cover ?? '';
+        $('kind').textContent = d.playing ? 'Now playing' : 'Last played';
+        $('title').textContent = d.title;
+        $('artist').textContent = d.artist + (d.album ? ` · ${d.album}` : '');
+        np.hidden = false;
+        status.classList.add('has-np');
+        if (overlay) overlay.textContent = `♪ ${d.playing ? '' : 'Last played: '}${song} · `;
+      } catch {}
+    };
+    let seen = false;
+    const emit = (open: boolean) => {
+      if (!open) return window.dispatchEvent(new Event('np:close'));
+      const r = np.querySelector('.card-in')!.getBoundingClientRect();
+      window.dispatchEvent(new CustomEvent('np:open', { detail: { x: r.left + r.width / 2, y: r.top + r.height / 2, w: r.width, h: r.height, first: !seen } }));
+      if (!seen) np.classList.add('bump');
+      seen = true;
+    };
+    np.addEventListener('pointerenter', (e) => e.pointerType === 'mouse' && emit(true));
+    np.addEventListener('pointerleave', () => emit(false));
+    np.addEventListener('animationend', (e) => (e.target as Element).classList.contains('card') && np.classList.remove('bump'));
+    update();
+    setInterval(update, 30000);
+    document.addEventListener('visibilitychange', update);
+  }
 </script>
 
 <style>
@@ -73,13 +178,14 @@ const clock = `${site.clock.city} · <span data-clock data-tz="${site.clock.time
     position: fixed;
     inset: 0 0 auto 0;
     z-index: 60;
-    display: flex;
+    /* brand | links (always centred) | status — the song's length never pushes the links around */
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     align-items: center;
-    justify-content: space-between;
     gap: 20px;
     padding: 18px var(--gutter);
     color: var(--text);
-    border-bottom: 1px solid rgba(42, 39, 36, 0);
+    border-bottom: 1px solid transparent;
     font-size: 12px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -89,7 +195,7 @@ const clock = `${site.clock.city} · <span data-clock data-tz="${site.clock.time
   }
   .nav.is-scrolled,
   .nav.is-open {
-    background: rgba(11, 10, 9, 0.72);
+    background: rgba(var(--bg-rgb), 0.72);
   }
   .nav.is-scrolled {
     backdrop-filter: blur(14px);
@@ -118,6 +224,23 @@ const clock = `${site.clock.city} · <span data-clock data-tz="${site.clock.time
   .link.is-active {
     color: var(--text);
   }
+  /* Underline slides in from the left on hover, out to the right on leave. */
+  .link .lbl {
+    background: linear-gradient(currentColor, currentColor) no-repeat right bottom / 0 1px;
+    padding-bottom: 2px;
+    transition: background-size 0.45s var(--ease-out);
+  }
+  @media (hover: hover) {
+    .link:hover .lbl {
+      background-position: left bottom;
+      background-size: 100% 1px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .link .lbl {
+      transition: none;
+    }
+  }
   .dot {
     width: 5px;
     height: 5px;
@@ -133,12 +256,227 @@ const clock = `${site.clock.city} · <span data-clock data-tz="${site.clock.time
     color: var(--muted);
   }
 
-  .clock {
+  .status {
+    justify-self: end;
+    max-width: 100%;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 22px;
+    min-width: 0;
     white-space: nowrap;
     color: var(--muted);
+  }
+  .has-np .pulse,
+  .has-np .city {
+    display: none;
+  }
+  .np {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+    flex: 0 1 auto;
+    padding: 4px 4px 4px 0;
+    border-radius: 99px;
+    color: var(--text);
+    text-transform: none;
+    letter-spacing: 0.04em;
+    transition: border-color 0.3s, color 0.3s;
+  }
+  .np {
+    position: relative;
+  }
+  /* Hover mini-player: square cover first, details below (Spotify's phone layout, kept quiet). */
+  .card {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    padding-top: 14px;
+    width: 232px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    transition: opacity 0.25s, transform 0.35s var(--ease-out), visibility 0.25s;
+    white-space: normal;
+    cursor: pointer;
+  }
+  .np:hover .card,
+  .np:focus-visible .card {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+  .card-in {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px 12px 14px;
+    border: 1px solid var(--line-strong);
+    border-radius: 12px;
+    background: rgba(var(--surface-rgb), 0.94);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 24px 60px rgba(var(--shadow-rgb), 0.55);
+    color: var(--text);
+  }
+  .card-art {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 6px;
+    background: var(--surface-2);
+    margin-bottom: 8px;
+  }
+  .card-k {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+  }
+  .card-t {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 1.05;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+  .card-a {
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+  .card-open {
+    margin-top: 6px;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--text-2);
+  }
+  .np:hover .card-open {
+    color: var(--accent);
+  }
+  @media (hover: none), (max-width: 860px) {
+    .card {
+      display: none;
+    }
+  }
+  .cover {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    object-fit: cover;
+  }
+  .cover[hidden] {
+    display: none;
+  }
+  .disc {
+    position: relative;
+    display: flex;
+    flex-shrink: 0;
+  }
+  /* Playing: two soft rings drift out of the cover, like sound leaving a speaker. */
+  .is-playing .disc::before,
+  .is-playing .disc::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid var(--accent);
+    opacity: 0;
+    animation: ring 2.6s ease-out infinite;
+    pointer-events: none;
+  }
+  .is-playing .disc::after {
+    animation-delay: 1.3s;
+  }
+  @keyframes ring {
+    0% {
+      transform: scale(1);
+      opacity: 0.7;
+    }
+    100% {
+      transform: scale(1.9);
+      opacity: 0;
+    }
+  }
+  .live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--muted);
+  }
+  .is-playing .live-dot {
+    background: var(--accent);
+    animation: blink 1.6s ease-in-out infinite;
+  }
+  @keyframes blink {
+    50% {
+      opacity: 0.3;
+    }
+  }
+  /* First hover only: the card springs open with an overshoot and the cover pops. */
+  .bump .card {
+    animation: bump 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform-origin: 85% 0;
+  }
+  .bump .cover {
+    animation: pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  @keyframes bump {
+    0% {
+      transform: translateY(-8px) scale(0.86);
+    }
+    100% {
+      transform: none;
+    }
+  }
+  @keyframes pop {
+    40% {
+      transform: scale(1.35);
+    }
+  }
+  .np[hidden] {
+    display: none;
+  }
+  .np:hover {
+    color: var(--accent);
+  }
+  .np-when {
+    color: var(--muted);
+  }
+  .np-text {
+    min-width: 0;
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .time {
+    flex-shrink: 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .is-playing .disc::before,
+    .is-playing .disc::after,
+    .is-playing .live-dot,
+    .bump .card,
+    .bump .cover {
+      animation: none;
+    }
+  }
+  @media (max-width: 1180px) {
+    .np-when {
+      display: none;
+    }
+  }
+  /* Too tight for a readable title: equaliser + time only (hover shows the song). */
+  @media (max-width: 1080px) {
+    .np-text {
+      display: none;
+    }
+
   }
   .pulse {
     width: 7px;
@@ -146,6 +484,63 @@ const clock = `${site.clock.city} · <span data-clock data-tz="${site.clock.time
     border-radius: 50%;
     background: var(--accent);
     box-shadow: 0 0 12px var(--accent);
+  }
+
+  /* Theme toggle: sun shows in dark (click for light), moon shows in light. */
+  .theme {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    margin: -6px -6px -6px -10px;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 50%;
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+    transition: color 0.3s, border-color 0.3s;
+  }
+  .theme:hover {
+    color: var(--accent);
+    border-color: var(--line-strong);
+  }
+  .ti {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.3;
+    stroke-linecap: round;
+    overflow: visible;
+  }
+  .ti-sun,
+  .ti-moon {
+    transform-origin: 8px 8px;
+    transition: transform 0.5s var(--ease-out), opacity 0.3s;
+  }
+  .ti-moon {
+    opacity: 0;
+    transform: rotate(-60deg) scale(0.6);
+  }
+  :global([data-theme='light']) .ti-sun {
+    opacity: 0;
+    transform: rotate(60deg) scale(0.6);
+  }
+  :global([data-theme='light']) .ti-moon {
+    opacity: 1;
+    transform: none;
+  }
+  .theme--overlay {
+    width: auto;
+    height: 44px;
+    margin: 16px 0 0;
+    align-self: flex-start;
+    border-radius: 99px;
+    border-color: var(--line-strong);
+    padding: 0 18px;
+    color: var(--text-2);
   }
 
   .menu-btn {
@@ -198,8 +593,11 @@ const clock = `${site.clock.city} · <span data-clock data-tz="${site.clock.time
 
   @media (max-width: 860px) {
     .links,
-    .clock {
+    .status {
       display: none;
+    }
+    .nav {
+      grid-template-columns: 1fr auto;
     }
     .menu-btn {
       display: block;

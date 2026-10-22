@@ -17,18 +17,66 @@
 
   --accent: #ff4d00;
   --accent-glow: 0 0 40px rgba(255, 77, 0, 0.35);
+  /* same colours as r, g, b for see-through overlays: rgba(var(--bg-rgb), 0.7) */
+  --bg-rgb: 11, 10, 9;
+  --surface-rgb: 16, 15, 13;
+  --accent-rgb: 255, 77, 0;
+  --shadow-rgb: 0, 0, 0;
+  /* grain overlay strength (paper needs less) */
+  --grain: 0.07;
 
   --serif: 'Instrument Serif', Georgia, serif;
   --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
 
   --gutter: clamp(16px, 4vw, 48px);
-  --section-y: clamp(80px, 11vw, 160px);
-  --page-top: clamp(140px, 18vh, 200px);
+  --section-y: clamp(56px, 7vw, 112px);
+  --page-top: clamp(104px, 14vh, 148px);
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-curtain: cubic-bezier(0.77, 0, 0.18, 1);
 
   color-scheme: dark;
+}
+
+/* Light theme, "warm paper". Picked with the nav toggle and saved in localStorage
+   ('chayan-theme'); the inline script in BaseLayout sets data-theme before paint.
+   Accent is deepened so orange text passes AA (4.7:1) on the paper. */
+:root[data-theme='light'] {
+  --bg: #f4f1ea;
+  --surface: #efebe2;
+  --surface-2: #e9e4d9;
+  --hairline: #e2dccf;
+  --line: #d6cfc1;
+  --line-strong: #bfb7a7;
+
+  --text: #141210;
+  --text-2: #3d3934;
+  --muted: #66605a;
+  --faint: #8a837a;
+  --dim: #a59e93;
+
+  --accent: #c23d00;
+  --accent-glow: 0 0 32px rgba(194, 61, 0, 0.22);
+  --bg-rgb: 244, 241, 234;
+  --surface-rgb: 239, 235, 226;
+  --accent-rgb: 194, 61, 0;
+  --shadow-rgb: 60, 45, 30;
+  --grain: 0.05;
+
+  color-scheme: light;
+}
+
+/* Only while the toggle is pressed: colours ease over instead of snapping. */
+.theme-fade,
+.theme-fade *,
+.theme-fade *::before,
+.theme-fade *::after {
+  transition:
+    background-color 0.4s ease,
+    border-color 0.4s ease,
+    color 0.4s ease,
+    fill 0.4s ease,
+    stroke 0.4s ease !important;
 }
 
 /* ==========================================================================
@@ -42,11 +90,13 @@
 
 html {
   background: var(--bg);
+  /* phones flash a blue box on every tap otherwise; keyboard focus still shows (:focus-visible) */
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
   margin: 0;
-  background: var(--bg);
+  background: transparent; /* html paints the colour; the drifting aura sits between */
   color: var(--text);
   font-family: var(--mono);
   -webkit-font-smoothing: antialiased;
@@ -169,6 +219,18 @@ textarea {
 .pill--solid:hover {
   color: var(--bg);
 }
+/* Subtle lift on hover — skipped for magnetic pills, which already move. */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .pill:not([data-magnetic]) {
+    transition:
+      transform 0.4s var(--ease-out),
+      border-color 0.3s,
+      color 0.3s;
+  }
+  .pill:not([data-magnetic]):hover {
+    transform: translateY(-2px);
+  }
+}
 
 /* Status pill (Shipped / Next / Queued) */
 .badge {
@@ -201,6 +263,7 @@ textarea {
   padding: 24px 0 32px;
 }
 .stat__value {
+  font-variant-numeric: tabular-nums;
   font-family: var(--serif);
   font-size: clamp(64px, 7vw, 116px);
   line-height: 0.85;
@@ -219,6 +282,12 @@ textarea {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
   gap: 0 24px;
+}
+
+/* QuickJump already draws the rule under itself (dev builds put its <script> in between) */
+:is(.qj, .qj + script) + .section,
+:is(.qj, .qj + script) + * > .block:first-child {
+  border-top-color: transparent;
 }
 
 /* Page-level hero spacing used by inner pages */
@@ -255,9 +324,17 @@ textarea {
   opacity: 0;
   transform: translateY(48px);
 }
+.js [data-reveal='wipe'] {
+  clip-path: inset(0 0 100% 0);
+  transform: scale(1.04);
+  transition:
+    clip-path 1.4s var(--ease-curtain) var(--d, 0ms),
+    transform 1.6s var(--ease-out) var(--d, 0ms);
+}
 .js [data-reveal].is-in {
   transform: none;
   opacity: 1;
+  clip-path: inset(0 0 0 0);
 }
 
 [data-magnetic] {
@@ -268,6 +345,7 @@ textarea {
   .js [data-reveal] {
     transform: none !important;
     opacity: 1 !important;
+    clip-path: none !important;
     transition: none;
   }
   html {
@@ -304,6 +382,9 @@ html.lenis body {
     --faint: #8c867c;
     --accent: #c43c00;
     --accent-glow: none;
+    --bg-rgb: 255, 255, 255;
+    --surface-rgb: 255, 255, 255;
+    --accent-rgb: 196, 60, 0;
     color-scheme: light;
   }
   .no-print,
@@ -314,5 +395,6 @@ html.lenis body {
   .js [data-reveal] {
     transform: none !important;
     opacity: 1 !important;
+    clip-path: none !important;
   }
 }

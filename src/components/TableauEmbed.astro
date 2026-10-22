@@ -1,0 +1,211 @@
+---
+/**
+ * Live Tableau Public dashboards. Shows a still preview first and loads the real,
+ * interactive dashboard only when clicked, so the page stays fast. On narrow screens
+ * the button opens the dashboard on Tableau Public instead (fixed-size dashboards
+ * don't fit a phone).
+ */
+import type { Dashboard } from '@content/types';
+
+interface Props {
+  dashboards: Dashboard[];
+  label: string;
+  /** Anchor for in-page links (QuickJump). */
+  id?: string;
+}
+const { dashboards, label, id } = Astro.props;
+const publicUrl = (d: Dashboard) => `https://public.tableau.com/views/${d.view}`;
+const embedUrl = (d: Dashboard) =>
+  `${publicUrl(d)}?:embed=y&:showVizHome=no&:display_count=n&:toolbar=bottom&:tabs=n&:device=desktop`;
+---
+
+<section class="tableau" id={id} data-tableau>
+  <div class="head">
+    <span class="label">{label}</span>
+    {
+      dashboards.length > 1 && (
+        <div class="tabs" role="tablist" aria-label="Dashboards">
+          {dashboards.map((d, i) => (
+            <button type="button" role="tab" class:list={['tab', { 'is-on': i === 0 }]} aria-selected={i === 0 ? 'true' : 'false'} data-tab={i}>
+              {d.label}
+            </button>
+          ))}
+        </div>
+      )
+    }
+  </div>
+
+  {
+    dashboards.map((d, i) => (
+      <div class:list={['panel', { 'is-off': i !== 0 }]} data-panel={i} aria-hidden={i !== 0 ? 'true' : undefined} style={`--ratio:${d.ratio}`}>
+        <div class="frame" data-frame data-src={embedUrl(d)}>
+          <img src={d.preview} alt={`${d.label} dashboard preview`} loading="lazy" decoding="async" />
+          <div class="veil">
+            <button type="button" class="pill pill--solid load" data-load>▶ Load live dashboard</button>
+            <a href={publicUrl(d)} target="_blank" rel="noopener" class="pill pill--solid open-phone">Open live dashboard ↗</a>
+            <span class="label label--sm">Interactive · filters and tooltips work · from Tableau Public</span>
+          </div>
+        </div>
+        <a href={publicUrl(d)} target="_blank" rel="noopener" class="full label label--sm">Open full screen on Tableau Public ↗</a>
+      </div>
+    ))
+  }
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-tableau]').forEach((root) => {
+    const tabs = root.querySelectorAll<HTMLButtonElement>('[data-tab]');
+    const panels = root.querySelectorAll<HTMLElement>('[data-panel]');
+    tabs.forEach((tab) =>
+      tab.addEventListener('click', () => {
+        tabs.forEach((t) => {
+          const on = t === tab;
+          t.classList.toggle('is-on', on);
+          t.setAttribute('aria-selected', String(on));
+        });
+        panels.forEach((p) => {
+          const off = p.dataset.panel !== tab.dataset.tab;
+          p.classList.toggle('is-off', off);
+          p.toggleAttribute('aria-hidden', off);
+        });
+      }),
+    );
+    root.querySelectorAll<HTMLButtonElement>('[data-load]').forEach((btn) =>
+      btn.addEventListener('click', () => {
+        const frame = btn.closest<HTMLElement>('[data-frame]')!;
+        const iframe = document.createElement('iframe');
+        iframe.src = frame.dataset.src!;
+        iframe.title = 'Live Tableau dashboard';
+        iframe.allowFullscreen = true;
+        iframe.setAttribute('data-lenis-prevent', ''); // let the dashboard scroll itself
+        const ratio = Number(getComputedStyle(frame.parentElement!).getPropertyValue('--ratio')) || 1.6;
+        const fit = () => (frame.style.height = `${frame.clientWidth / ratio + 27}px`);
+        frame.classList.add('is-live');
+        fit();
+        new ResizeObserver(fit).observe(frame);
+        frame.appendChild(iframe);
+      }),
+    );
+  });
+</script>
+
+<style>
+  .tableau {
+    padding: 0 var(--gutter) clamp(80px, 10vw, 150px);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .tab {
+    min-height: 40px;
+    padding: 0 16px;
+    border-radius: 99px;
+    border: 1px solid var(--line-strong);
+    background: transparent;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .tab:hover {
+    border-color: var(--accent);
+  }
+  .tab.is-on {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg);
+  }
+  .panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: min(100%, 1200px);
+  }
+  /* Inactive tab: invisible but still full width, so a loaded dashboard keeps its layout. */
+  .tableau {
+    position: relative;
+  }
+  .panel.is-off {
+    position: absolute;
+    left: var(--gutter);
+    right: var(--gutter);
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .frame {
+    position: relative;
+    aspect-ratio: var(--ratio) / 1;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+    background: #fff;
+  }
+  /* Once live, the height is set in JS: dashboard shape + Tableau's toolbar strip. */
+  .frame.is-live {
+    aspect-ratio: auto;
+  }
+  .frame img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+  }
+  /* The iframe is created by the script, so it needs a global selector to get these styles. */
+  .frame :global(iframe) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  .veil {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 20px;
+    text-align: center;
+    background: rgba(var(--bg-rgb), 0.62);
+    backdrop-filter: blur(2px);
+  }
+  .veil .label {
+    color: var(--text);
+  }
+  .is-live .veil,
+  .is-live img {
+    display: none;
+  }
+  .open-phone {
+    display: none;
+  }
+  .full {
+    align-self: flex-start;
+    color: var(--accent);
+  }
+  @media (max-width: 760px) {
+    .load {
+      display: none;
+    }
+    .open-phone {
+      display: inline-flex;
+    }
+  }
+</style>

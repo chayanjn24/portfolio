@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import RevealLines from '@components/RevealLines.astro';
 import ImageSlot from '@components/ImageSlot.astro';
+import QuickJump from '@components/QuickJump.astro';
 import { intro, hobbiesSection, hobbies, pathSection, path, nextLevel } from '@content/about';
 import { getProject, projectHref } from '@lib/projects';
 import { fill, rich, pad2 } from '@lib/text';
@@ -13,6 +14,13 @@ const powersLink = (powers?: string) => {
   const p = getProject(powers);
   return p ? { href: projectHref(p), text: `Powers project ${p.num} ↗`, label: p.title } : null;
 };
+
+// Quick-jump labels reuse the "(A) …" prefixes from about.ts.
+const prefix = (l: string) => l.match(/^\([A-Z]\)/)?.[0] ?? '';
+const jump = [
+  { id: 'hobbies', label: `${prefix(hobbiesSection.label)} Off the clock` },
+  { id: 'path', label: `${prefix(pathSection.label)} The path` },
+];
 ---
 
 <BaseLayout title="About">
@@ -32,7 +40,9 @@ const powersLink = (powers?: string) => {
     </div>
   </section>
 
-  <section class="section">
+  <QuickJump items={jump} />
+
+  <section class="section" id="hobbies">
     <div class="section-head">
       <div class="stack" style="gap:14px">
         <span class="label">{fill(hobbiesSection.label)}</span>
@@ -89,7 +99,7 @@ const powersLink = (powers?: string) => {
     </div>
   </section>
 
-  <section class="section">
+  <section class="section" id="path">
     <div class="stack" style="gap:14px">
       <span class="label">{pathSection.label}</span>
       <h2 class="h2"><RevealLines lines={[pathSection.title]} /></h2>
@@ -135,12 +145,12 @@ const powersLink = (powers?: string) => {
 
 <style>
   .hero {
-    gap: clamp(48px, 6vw, 96px);
-    background: radial-gradient(50% 45% at 80% 10%, rgba(255, 77, 0, 0.12), rgba(11, 10, 9, 0) 70%);
+    gap: clamp(32px, 4vw, 64px);
+    background: radial-gradient(50% 45% at 80% 10%, rgba(var(--accent-rgb), 0.12), rgba(var(--bg-rgb), 0) 70%);
   }
   .title {
     margin: 0;
-    font-size: clamp(60px, 9vw, 150px);
+    font-size: clamp(52px, 7.5vw, 124px);
     line-height: 0.9;
     letter-spacing: -0.025em;
     max-width: 15ch;
@@ -149,10 +159,10 @@ const powersLink = (powers?: string) => {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
     gap: clamp(32px, 5vw, 80px);
-    align-items: end;
+    align-items: start;
   }
   .portrait {
-    max-width: 420px;
+    max-width: 380px;
     width: 100%;
   }
   .intro-text {

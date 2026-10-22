@@ -1,7 +1,8 @@
 ---
 /**
- * An image with a fixed aspect ratio. If `src` is empty, shows a labelled
- * placeholder so you can see where a photo still needs to go.
+ * An image in a framed box. If `src` is empty, shows a labelled placeholder
+ * (at `ratio`) so you can see where a photo still needs to go.
+ * With `natural`, a real image keeps its own shape — nothing is cropped.
  */
 interface Props {
   src?: string;
@@ -10,14 +11,17 @@ interface Props {
   placeholder: string;
   /** CSS aspect-ratio, e.g. '16/10'. */
   ratio: string;
+  /** Show the whole image at its own aspect ratio instead of cropping it to `ratio`. */
+  natural?: boolean;
   class?: string;
   loading?: 'lazy' | 'eager';
 }
 
-const { src, alt = '', placeholder, ratio, class: className, loading = 'lazy' } = Astro.props;
+const { src, alt = '', placeholder, ratio, natural = false, class: className, loading = 'lazy' } = Astro.props;
+const whole = natural && !!src;
 ---
 
-<div class:list={['slot', className]} style={`aspect-ratio:${ratio}`}>
+<div class:list={['slot', { whole }, className]} style={whole ? undefined : `aspect-ratio:${ratio}`}>
   {
     src ? (
       <img src={src} alt={alt} loading={loading} decoding="async" />
@@ -45,6 +49,10 @@ const { src, alt = '', placeholder, ratio, class: className, loading = 'lazy' } 
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+  .whole img {
+    position: static;
+    height: auto;
   }
   .empty {
     position: absolute;

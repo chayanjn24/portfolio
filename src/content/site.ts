@@ -24,8 +24,10 @@ export const site = {
 
   /** Shown in the footer ("Based"). */
   based: 'Guwahati ⇄ Pune',
-  /** Live clock in the nav. */
+  /** Live clock in the nav. `city` shows only until Spotify is connected. */
   clock: { city: 'Pune', timeZone: 'Asia/Kolkata', suffix: 'IST' },
+  /** Spotify "now playing" in the nav (needs the setup in README → Spotify). false = clock only. */
+  spotify: true,
   /** Shown in the mobile menu next to the clock. */
   availability: 'Open to roles',
   copyrightYear: 2026,

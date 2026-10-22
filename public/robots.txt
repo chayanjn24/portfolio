@@ -1,0 +1,5 @@
+# Lets search engines read every page and tells them where the page list is.
+User-agent: *
+Allow: /
+
+Sitemap: https://chayangulgulia.vercel.app/sitemap-index.xml
