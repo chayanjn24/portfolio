@@ -37,7 +37,7 @@ VS Code autocompletes the fields, and `npm run build` stops with a clear error i
 **Add photos** — put files in `public/images/…` and set the `image` / `cover` / `portrait` field to the path
 starting with `/images/`. Anything without an image shows a labelled placeholder.
 
-**Update the downloadable résumé** — replace `public/resume.pdf` (or change `resumePdf` in `site.ts`).
+**Update the downloadable résumé** — replace `public/Chayan_Gulgulia Resume.pdf` (keep the same name, or change `resumePdf` in `site.ts`).
 The "Print / save PDF" button prints a light version of the résumé page itself.
 
 **Show your phone number** — set `phone` in `site.ts` (leave `''` to hide it).

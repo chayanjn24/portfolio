@@ -40,7 +40,7 @@ sections
         <button type="button" class="pill pill--solid" data-magnetic data-print>Print / save PDF ↓</button>
         {
           site.resumePdf && (
-            <a href={site.resumePdf} download class="pill">
+            <a href={encodeURI(site.resumePdf)} download={site.resumePdf.split('/').pop()} class="pill">
               One-page PDF ↓
             </a>
           )

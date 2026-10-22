@@ -31,7 +31,7 @@ export const site = {
   copyrightYear: 2026,
 
   /** Your downloadable résumé PDF, inside /public. Leave '' to hide the download button. */
-  resumePdf: '/resume.pdf',
+  resumePdf: '/Chayan_Gulgulia Resume.pdf',
 };
 
 /** Top navigation. Order = display order (numbered 01, 02…). */
