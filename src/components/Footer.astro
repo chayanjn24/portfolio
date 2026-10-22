@@ -1,0 +1,129 @@
+---
+import { site, footer } from '@content/site';
+import RevealLines from '@components/RevealLines.astro';
+
+interface Props {
+  /** Show the big call-to-action block. */
+  cta?: boolean;
+}
+const { cta = true } = Astro.props;
+---
+
+<footer class="footer no-print">
+  {
+    cta && (
+      <div class="cta">
+        <div class="stack cta-text">
+          <span class="label">{footer.label}</span>
+          <h2 class="h2 cta-title">
+            <RevealLines lines={footer.headline} />
+          </h2>
+        </div>
+        <div class="cta-btn-wrap">
+          <a href="/contact" data-label="Contact" data-magnetic class="cta-btn">
+            {footer.cta}
+          </a>
+        </div>
+      </div>
+    )
+  }
+
+  <div class="meta">
+    <div class="col">
+      <span class="k">Email</span>
+      <a href={`mailto:${site.email}`} class="email">{site.email}</a>
+    </div>
+    <div class="col">
+      <span class="k">Elsewhere</span>
+      <div class="row">
+        <a href={site.linkedin} target="_blank" rel="noopener">LinkedIn ↗</a>
+        <a href={site.github} target="_blank" rel="noopener">GitHub ↗</a>
+      </div>
+    </div>
+    <div class="col"><span class="k">Based</span><span>{site.based}</span></div>
+    <div class="col"><span class="k">©</span><span>{site.copyrightYear} {site.fullName}</span></div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(70% 60% at 50% 120%, rgba(255, 77, 0, 0.22), rgba(11, 10, 9, 0) 70%),
+      var(--bg);
+    padding: clamp(90px, 13vw, 190px) var(--gutter) 28px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(64px, 9vw, 140px);
+  }
+  .cta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+    gap: 40px;
+    align-items: end;
+  }
+  .cta-text {
+    gap: 28px;
+  }
+  .cta-title {
+    font-size: clamp(60px, 10vw, 168px);
+  }
+  .cta-btn-wrap {
+    display: flex;
+    justify-content: flex-end;
+  }
+  .cta-btn {
+    width: clamp(140px, 15vw, 210px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 24px;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    box-shadow: 0 0 80px rgba(255, 77, 0, 0.35);
+  }
+  .cta-btn:hover {
+    color: var(--bg);
+  }
+
+  .meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+    gap: 24px;
+    border-top: 1px solid var(--line);
+    padding-top: 24px;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-2);
+  }
+  .col {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .k {
+    color: var(--faint);
+  }
+  .row {
+    display: flex;
+    gap: 18px;
+  }
+  .row a,
+  .email {
+    color: var(--text);
+  }
+  .email {
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 13px;
+  }
+</style>

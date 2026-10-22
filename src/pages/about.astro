@@ -1,0 +1,363 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import RevealLines from '@components/RevealLines.astro';
+import ImageSlot from '@components/ImageSlot.astro';
+import { intro, hobbiesSection, hobbies, pathSection, path, nextLevel } from '@content/about';
+import { getProject, projectHref } from '@lib/projects';
+import { fill, rich, pad2 } from '@lib/text';
+
+/** Resolve a hobby's `powers` field to a link. */
+const powersLink = (powers?: string) => {
+  if (!powers) return null;
+  if (powers === 'all') return { href: '/work', text: `Powers all ${fill('{total}')} projects ↗`, label: 'Work' };
+  const p = getProject(powers);
+  return p ? { href: projectHref(p), text: `Powers project ${p.num} ↗`, label: p.title } : null;
+};
+---
+
+<BaseLayout title="About">
+  <section class="page-hero hero">
+    <div class="stack" style="gap:20px">
+      <span class="label">{intro.label}</span>
+      <h1 class="title serif"><RevealLines lines={intro.headline} step={100} /></h1>
+    </div>
+    <div class="intro">
+      <div data-reveal="fade" class="portrait">
+        <ImageSlot src={intro.portrait} alt="Portrait of Chayan" placeholder={intro.portraitPlaceholder} ratio="4/5" loading="eager" />
+      </div>
+      <div data-reveal="fade" data-delay="150" class="stack intro-text">
+        <p class="lead serif" set:html={rich(intro.lead)} />
+        <p class="body">{intro.body}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <div class="stack" style="gap:14px">
+        <span class="label">{fill(hobbiesSection.label)}</span>
+        <h2 class="h2"><RevealLines lines={[hobbiesSection.title]} /></h2>
+      </div>
+      <span class="label">{hobbiesSection.hint}</span>
+    </div>
+
+    <div class="hobbies" data-hobbies>
+      {
+        hobbies.map((h, i) => {
+          const link = powersLink(h.powers);
+          return (
+            <div class="hobby" data-hobby>
+              <div class="hobby-head">
+                <span class="h-num">{pad2(i + 1)}</span>
+                <span class="h-name serif">{h.name}</span>
+                <span class="label label--sm h-type">{h.type}</span>
+              </div>
+              <div class="hobby-body">
+                <div class="clip">
+                  <div class="hobby-inner">
+                    <div class="h-img">
+                      <ImageSlot src={h.image} alt={h.name} placeholder={h.imagePlaceholder} ratio="4/3" />
+                    </div>
+                    <div class="stack" style="gap:14px">
+                      <span class="label label--sm move-k">Special move</span>
+                      <span class="move serif">{h.move}</span>
+                      <span class="flavor">{h.flavor}</span>
+                    </div>
+                    <div class="stack bars">
+                      {h.stats.map(([k, v]) => (
+                        <div class="bar-row">
+                          <span>{k}</span>
+                          <span class="bar-v">{v}</span>
+                          <div class="bar">
+                            <div style={`width:${Math.max(0, Math.min(10, v)) * 10}%`} />
+                          </div>
+                        </div>
+                      ))}
+                      {link && (
+                        <a href={link.href} data-label={link.label} class="powers">
+                          {link.text}
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })
+      }
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="stack" style="gap:14px">
+      <span class="label">{pathSection.label}</span>
+      <h2 class="h2"><RevealLines lines={[pathSection.title]} /></h2>
+    </div>
+    <div class="path">
+      {
+        path.map((t) => (
+          <div class="milestone" data-reveal="fade">
+            <span class="m-when">{t.when}</span>
+            <div class="stack" style="gap:6px">
+              <span class="m-org serif">{t.org}</span>
+              <span class="label label--sm">{t.role}</span>
+            </div>
+            <span class="m-desc">{t.description}</span>
+          </div>
+        ))
+      }
+      <a href="/contact" data-label="Contact" class="milestone next-level">
+        <span class="m-when">{nextLevel.when}</span>
+        <span class="m-org serif"><i>{nextLevel.title}</i></span>
+        <span class="m-desc">{nextLevel.description}</span>
+      </a>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  // Touch devices: tap a row to open it (hover devices use CSS :hover).
+  const fine = window.matchMedia('(hover: hover)').matches;
+  if (!fine) {
+    const rows = document.querySelectorAll<HTMLElement>('[data-hobby]');
+    rows.forEach((row) =>
+      row.addEventListener('click', (e) => {
+        if ((e.target as Element).closest('a')) return;
+        const open = !row.classList.contains('is-open');
+        rows.forEach((r) => r.classList.remove('is-open'));
+        row.classList.toggle('is-open', open);
+        row.closest('[data-hobbies]')!.classList.toggle('has-open', open);
+      }),
+    );
+  }
+</script>
+
+<style>
+  .hero {
+    gap: clamp(48px, 6vw, 96px);
+    background: radial-gradient(50% 45% at 80% 10%, rgba(255, 77, 0, 0.12), rgba(11, 10, 9, 0) 70%);
+  }
+  .title {
+    margin: 0;
+    font-size: clamp(60px, 9vw, 150px);
+    line-height: 0.9;
+    letter-spacing: -0.025em;
+    max-width: 15ch;
+  }
+  .intro {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+    gap: clamp(32px, 5vw, 80px);
+    align-items: end;
+  }
+  .portrait {
+    max-width: 420px;
+    width: 100%;
+  }
+  .intro-text {
+    gap: 24px;
+    max-width: 56ch;
+  }
+  .lead {
+    margin: 0;
+    font-size: clamp(26px, 2.6vw, 40px);
+    line-height: 1.12;
+    text-wrap: pretty;
+  }
+  .body {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-2);
+    text-wrap: pretty;
+  }
+
+  /* ---------- hobbies ---------- */
+  .hobbies {
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid var(--line);
+  }
+  .hobby {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--line);
+    cursor: pointer;
+  }
+  .hobby-head {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) minmax(0, auto);
+    gap: 16px;
+    align-items: baseline;
+    padding: clamp(14px, 1.6vw, 20px) 0;
+  }
+  .h-num {
+    font-size: 11px;
+    color: var(--muted);
+    transition: color 0.35s;
+  }
+  .h-name {
+    font-size: clamp(40px, 6vw, 96px);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    transition:
+      color 0.35s,
+      transform 0.6s var(--ease-out);
+  }
+  .h-type {
+    text-align: right;
+  }
+  .hobby-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.7s var(--ease-out);
+  }
+  .clip {
+    overflow: hidden;
+    min-height: 0;
+  }
+  .hobby-inner {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    gap: 24px 40px;
+    padding: 4px 0 32px 60px;
+    opacity: 0;
+    transition: opacity 0.5s;
+  }
+  @media (max-width: 600px) {
+    .hobby-inner {
+      padding-left: 0;
+    }
+  }
+  .h-img {
+    max-width: 340px;
+  }
+  .move-k {
+    color: var(--accent);
+  }
+  .move {
+    font-style: italic;
+    font-size: clamp(28px, 2.6vw, 40px);
+    line-height: 1;
+  }
+  .flavor {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-2);
+    max-width: 42ch;
+  }
+  .bars {
+    gap: 14px;
+    justify-content: flex-end;
+  }
+  .bar-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 30px;
+    gap: 6px 12px;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-2);
+  }
+  .bar-v {
+    text-align: right;
+    color: var(--text);
+  }
+  .bar {
+    grid-column: span 2;
+    height: 1px;
+    background: var(--line);
+  }
+  .bar div {
+    height: 1px;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+  }
+  .powers {
+    align-self: flex-start;
+    margin-top: 6px;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  /* Open state: hover (mouse) or .is-open (tap). Siblings dim. */
+  @media (hover: hover) {
+    .hobbies:hover .h-name {
+      color: var(--dim);
+    }
+    .hobby:hover .h-name {
+      color: var(--accent);
+      font-style: italic;
+      transform: translateX(20px);
+    }
+    .hobby:hover .h-num {
+      color: var(--accent);
+    }
+    .hobby:hover .hobby-body {
+      grid-template-rows: 1fr;
+    }
+    .hobby:hover .hobby-inner {
+      opacity: 1;
+    }
+  }
+  .has-open .h-name {
+    color: var(--dim);
+  }
+  .hobby.is-open .h-name {
+    color: var(--accent);
+    font-style: italic;
+    transform: translateX(20px);
+  }
+  .hobby.is-open .h-num {
+    color: var(--accent);
+  }
+  .hobby.is-open .hobby-body {
+    grid-template-rows: 1fr;
+  }
+  .hobby.is-open .hobby-inner {
+    opacity: 1;
+  }
+
+  /* ---------- path ---------- */
+  .path {
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid var(--line);
+  }
+  .milestone {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+    gap: 12px 32px;
+    align-items: baseline;
+    padding: clamp(24px, 3vw, 40px) 0;
+    border-top: 1px solid var(--line);
+  }
+  .m-when {
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+  }
+  .m-org {
+    font-size: clamp(36px, 4vw, 60px);
+    line-height: 1;
+  }
+  .m-desc {
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--text-2);
+    max-width: 48ch;
+  }
+  .next-level {
+    color: var(--text);
+    transition:
+      padding 0.6s var(--ease-out),
+      color 0.3s;
+  }
+  .next-level:hover {
+    padding-left: 20px;
+    color: var(--accent);
+  }
+</style>

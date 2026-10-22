@@ -1,0 +1,318 @@
+/* ==========================================================================
+   Design tokens — change a colour or font here and it changes everywhere.
+   ========================================================================== */
+:root {
+  --bg: #0b0a09;
+  --surface: #100f0d;
+  --surface-2: #14120f;
+  --hairline: #1e1c19;
+  --line: #2a2724;
+  --line-strong: #3a3631;
+
+  --text: #eee9e0;
+  --text-2: #a8a196;
+  --muted: #8c867c;
+  --faint: #5e5850;
+  --dim: #4a4540;
+
+  --accent: #ff4d00;
+  --accent-glow: 0 0 40px rgba(255, 77, 0, 0.35);
+
+  --serif: 'Instrument Serif', Georgia, serif;
+  --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+
+  --gutter: clamp(16px, 4vw, 48px);
+  --section-y: clamp(80px, 11vw, 160px);
+  --page-top: clamp(140px, 18vh, 200px);
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-curtain: cubic-bezier(0.77, 0, 0.18, 1);
+
+  color-scheme: dark;
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+a:hover {
+  color: var(--accent);
+}
+
+em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 4px;
+}
+
+/* ==========================================================================
+   Shared building blocks
+   ========================================================================== */
+.serif {
+  font-family: var(--serif);
+  font-weight: 400;
+}
+
+/* Small uppercase mono label, e.g. "(02) Profile" */
+.label {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.label--sm {
+  font-size: 11px;
+}
+.label--faint {
+  color: var(--faint);
+}
+
+.section {
+  padding: var(--section-y) var(--gutter);
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(32px, 4vw, 56px);
+}
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.h2 {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(56px, 8vw, 128px);
+  line-height: 0.88;
+  letter-spacing: -0.02em;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Pills & buttons */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 22px;
+  border-radius: 99px;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.pill--solid {
+  min-height: 52px;
+  padding: 0 28px;
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--bg);
+  letter-spacing: 0.1em;
+  box-shadow: var(--accent-glow);
+}
+.pill--solid:hover {
+  color: var(--bg);
+}
+
+/* Status pill (Shipped / Next / Queued) */
+.badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 99px;
+  border: 1px solid var(--line-strong);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--muted);
+}
+.badge--solid {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+}
+.badge--accent {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Big stat number + caption (Home profile, project results) */
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border-top: 1px solid var(--line);
+  padding: 24px 0 32px;
+}
+.stat__value {
+  font-family: var(--serif);
+  font-size: clamp(64px, 7vw, 116px);
+  line-height: 0.85;
+  letter-spacing: -0.02em;
+}
+.stat:first-child .stat__value {
+  color: var(--accent);
+}
+.stat__label {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-2);
+  max-width: 26ch;
+}
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+  gap: 0 24px;
+}
+
+/* Page-level hero spacing used by inner pages */
+.page-hero {
+  padding: var(--page-top) var(--gutter) var(--section-y);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==========================================================================
+   Motion — reveal on scroll (driven by src/scripts/fx.ts)
+   `.js` is added to <html> by an inline script, so without JS nothing is hidden.
+   ========================================================================== */
+.line {
+  display: block;
+  overflow: hidden;
+  /* room for italic overhangs and descenders; the negative margin keeps line spacing tight */
+  padding: 0 0.15em 0.16em 0;
+  margin-bottom: -0.08em;
+}
+.line > [data-reveal] {
+  display: block;
+}
+
+.js [data-reveal] {
+  transition:
+    transform 1.3s var(--ease-out) var(--d, 0ms),
+    opacity 1.3s var(--ease-out) var(--d, 0ms);
+}
+.js [data-reveal='line'] {
+  transform: translateY(110%);
+}
+.js [data-reveal='fade'] {
+  opacity: 0;
+  transform: translateY(48px);
+}
+.js [data-reveal].is-in {
+  transform: none;
+  opacity: 1;
+}
+
+[data-magnetic] {
+  transition: transform 0.6s var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal] {
+    transform: none !important;
+    opacity: 1 !important;
+    transition: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Lenis smooth scroll */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+/* ==========================================================================
+   Print — every page prints light; the résumé page adds its own tweaks.
+   ========================================================================== */
+@media print {
+  :root {
+    --bg: #fff;
+    --surface: #fff;
+    --surface-2: #f4f2ee;
+    --hairline: #e6e2dc;
+    --line: #d9d4cc;
+    --line-strong: #c4beb4;
+    --text: #141210;
+    --text-2: #3d3a35;
+    --muted: #6b665e;
+    --faint: #8c867c;
+    --accent: #c43c00;
+    --accent-glow: none;
+    color-scheme: light;
+  }
+  .no-print,
+  .grain,
+  .curtain {
+    display: none !important;
+  }
+  .js [data-reveal] {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}

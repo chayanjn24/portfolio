@@ -1,0 +1,55 @@
+---
+import { capabilities } from '@content/home';
+import { pad2 } from '@lib/text';
+import RevealLines from '@components/RevealLines.astro';
+---
+
+<section class="section">
+  <div class="section-head">
+    <h2 class="h2"><RevealLines lines={[capabilities.title]} /></h2>
+    <span class="label">{capabilities.label}</span>
+  </div>
+  <div class="list">
+    {
+      capabilities.items.map((c, i) => (
+        <div class="row">
+          <span class="label label--sm">{pad2(i + 1)}</span>
+          <span class="name serif">{c.title}</span>
+          <span class="detail label label--sm">{c.detail}</span>
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .list {
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid var(--line);
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr) minmax(0, auto);
+    gap: 16px;
+    align-items: baseline;
+    padding: clamp(16px, 2.2vw, 28px) 0;
+    border-top: 1px solid var(--line);
+    transition:
+      padding 0.6s var(--ease-out),
+      color 0.3s;
+  }
+  .row:hover {
+    padding-left: 24px;
+    color: var(--accent);
+  }
+  .name {
+    font-size: clamp(34px, 5vw, 76px);
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+  .detail {
+    letter-spacing: 0.06em;
+    text-align: right;
+  }
+</style>

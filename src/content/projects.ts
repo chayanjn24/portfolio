@@ -1,0 +1,295 @@
+/**
+ * PROJECTS — every project on the site.
+ *
+ * - Order here = order on the Work page and the "Next project" chain.
+ * - status: 'shipped' (case study page), 'next' (up next), 'queued'.
+ * - To ship a project: set status to 'shipped', add `results`, `links`, and a `cover` image
+ *   (drop the image into /public/images/projects/). Remove `when`/`done` if you like.
+ * - Counts like "3 shipped, 10 in the queue" update automatically.
+ */
+import type { Project } from './types';
+
+export const projects: Project[] = [
+  {
+    id: 'credit-risk',
+    num: '01',
+    status: 'shipped',
+    title: 'Credit Risk & Loan Default',
+    kind: 'Banking analytics',
+    cats: ['ML', 'Finance', 'BI'],
+    tags: ['Snowflake SQL', 'Python', 'Logistic regression', 'XGBoost', 'Tableau Public'],
+    summary: 'Which borrowers default, and where the risk concentrates — 150K+ loans, XGBoost AUC 0.87.',
+    question: 'Which borrowers are likely to default — and where does the lender’s risk concentrate?',
+    steps: [
+      'Loaded 150K+ loan records from Kaggle’s “Give Me Some Credit” into Snowflake.',
+      'Profiled and engineered features in SQL with CTEs, window functions and cohort analysis: revolving utilisation plus prior delinquency drove a 48% default rate, against 3% for low-risk borrowers.',
+      'Benchmarked logistic regression (AUC 0.86) against XGBoost (AUC 0.87).',
+      'Turned the scores into a lending policy: declining the riskiest 20% of applicants catches 73% of defaulters.',
+      'Published two cross-filtered Tableau Public dashboards and a business case study.',
+    ],
+    results: [
+      ['73%', 'of defaulters caught by declining the riskiest 20%'],
+      ['0.87', 'AUC, XGBoost (logistic baseline 0.86)'],
+      ['150K+', 'loan records analysed'],
+    ],
+    links: [
+      { label: 'GitHub repo', href: 'https://github.com/chayanjn24/credit-risk-analysis' },
+      { label: 'Tableau Public', href: 'https://public.tableau.com/app/profile/chayan.gulgulia/vizzes' },
+    ],
+    cover: '/images/projects/credit-risk.png',
+    coverPlaceholder: 'Tableau dashboard screenshot',
+  },
+  {
+    id: 'expense-ai',
+    num: '02',
+    status: 'shipped',
+    title: 'AI Expense Analytics',
+    kind: 'ML & data science · 2025',
+    cats: ['ML', 'Finance'],
+    tags: ['Python', 'Isolation Forest', 'KMeans', 'ARIMA', 'Plotly'],
+    summary: 'Finds fraud, spending personas and next month’s bill hiding in raw transactions.',
+    question: 'What can raw expense transactions tell us about fraud, habits and future spend?',
+    steps: [
+      'Analysed expense transactions in Python for patterns and anomalies.',
+      'Isolation Forest flags transactions unlike the rest — fraud candidates.',
+      'KMeans segments spenders by behaviour.',
+      'ARIMA forecasts upcoming spend; reports with key metrics generate automatically.',
+      'Interactive Plotly dashboards for trends and budget insights.',
+    ],
+    results: [
+      ['3', 'models: anomaly, segments, forecast'],
+      ['Auto', 'metric reporting'],
+      ['Plotly', 'interactive dashboards'],
+    ],
+    links: [
+      {
+        label: 'Open the notebook',
+        href: 'https://colab.research.google.com/drive/1s0WEnFtEE76BZecVxr-QF1KT-m9hFuSq?usp=sharing',
+      },
+    ],
+    coverPlaceholder: 'Plotly dashboard screenshot',
+  },
+  {
+    id: 'campus-crave',
+    num: '03',
+    status: 'shipped',
+    title: 'Campus Crave',
+    kind: 'Mobile app',
+    cats: ['Product'],
+    tags: ['Flutter', 'Dart', 'API integration'],
+    // TODO: generic description — replace with what the app actually does and for whom.
+    summary: 'A responsive cross-platform mobile app built in Flutter, with backend APIs integrated end to end.',
+    question: 'Can one codebase ship a fast, responsive app across platforms?',
+    steps: [
+      'Built a responsive cross-platform UI in Flutter.',
+      'Integrated backend APIs end to end.',
+    ],
+    results: [
+      ['1', 'codebase, every platform'],
+      ['Flutter', 'responsive UI'],
+      ['APIs', 'integrated end to end'],
+    ],
+    links: [{ label: 'GitHub repo', href: 'https://github.com/chayanjn24/campus_crave' }],
+    coverPlaceholder: 'App screens',
+  },
+  {
+    id: 'recon-lakehouse',
+    num: '04',
+    status: 'next',
+    when: 'Nov 2026',
+    title: 'Reconciliation Lakehouse',
+    kind: 'Flagship · synthetic data',
+    cats: ['Big data', 'Finance'],
+    tags: ['Databricks', 'PySpark', 'Delta Lake', 'pytest'],
+    summary: 'A medallion pipeline that reconciles two revenue sources and explains every gap over 5%.',
+    question:
+      'Can a medallion pipeline reconcile two reporting sources, normalise timezones, and flag gaps over 5% with traceable reason codes?',
+    steps: [
+      'Seeded generator for two synthetic sources, with injected errors and a ground-truth table.',
+      'Bronze → silver → gold in Delta Lake: dedupe, late-data MERGE, schema enforcement.',
+      'Timezone handling as an explicit, tested parameter — never silent.',
+      'Rule-based reason codes plus drift detection, scored against ground truth.',
+    ],
+    done: 'Injected errors detected with per-type recall; totals tie to source.',
+  },
+  {
+    id: 'qcom-dbt',
+    num: '05',
+    status: 'queued',
+    when: 'Nov 2026',
+    title: 'Quick-Commerce Funnel',
+    kind: 'Product analytics',
+    hobby: 'Cooking',
+    cats: ['Product', 'Analytics eng'],
+    tags: ['dbt', 'Postgres', 'Metabase', 'A/B testing'],
+    summary: 'Where the funnel leaks, who comes back, and whether the product change worked.',
+    question: 'Where does the customer funnel leak, which segments retain, and did a product change work?',
+    steps: [
+      'Tested dbt star schema on public e-commerce data.',
+      'Funnel, cohort and RFM marts in Metabase.',
+      'A/B test with SRM check, CI and power — not just a p-value.',
+    ],
+    done: 'dbt tests pass; dashboard live; A/B memo written.',
+  },
+  {
+    id: 'fraud-cost',
+    num: '06',
+    status: 'queued',
+    when: 'Nov 2026',
+    title: 'Fraud, Priced Right',
+    kind: 'Risk ML',
+    cats: ['ML', 'Finance'],
+    tags: ['XGBoost', 'MLflow', 'SHAP'],
+    summary: 'Picks the fraud-alert threshold that minimises expected loss, not the one with the best accuracy.',
+    question: 'At what score threshold does a fraud model minimise expected loss, given review cost per alert?',
+    steps: [
+      'Time-ordered splits; explicit leakage checks.',
+      'XGBoost vs rule and logistic baselines on PR-AUC.',
+      'Cost curve, calibration, drift (PSI), SHAP, model card.',
+    ],
+    done: 'Threshold chosen on cost; MLflow runs tracked; SHAP plots.',
+  },
+  {
+    id: 'trek-planner',
+    num: '07',
+    status: 'queued',
+    when: 'Nov 2026',
+    title: 'Sahyadri Trek Planner',
+    kind: 'Geospatial',
+    hobby: 'Trekking',
+    cats: ['Geo'],
+    tags: ['GeoPandas', 'PostGIS', 'Folium', 'Open-Meteo'],
+    summary: 'Scores treks near Pune by difficulty and tells you the best month to go.',
+    question: 'Which Sahyadri treks near Pune match a difficulty level, and when is the best month to go?',
+    steps: [
+      'OpenStreetMap trails + DEM elevation, smoothed.',
+      'Difficulty score calibrated against hand labels.',
+      '10 years of weather → best-month score; Streamlit map.',
+    ],
+    done: 'Map and planner live.',
+  },
+  {
+    id: 'nifty-risk',
+    num: '08',
+    status: 'queued',
+    when: 'Dec 2026',
+    title: 'Nifty 50 Risk Lab',
+    kind: 'Markets',
+    cats: ['Finance', 'BI'],
+    tags: ['DuckDB', 'statsmodels', 'GARCH', 'Power BI'],
+    summary:
+      'Volatility, drawdown and VaR across Nifty 50 — and whether simple strategies beat buy-and-hold after costs.',
+    question: 'Do simple strategies beat buy-and-hold on Nifty 50 once costs and lookahead are handled?',
+    steps: [
+      'Adjusted prices in DuckDB; survivorship bias stated.',
+      'Volatility, drawdown, beta, VaR with breach backtests.',
+      'Walk-forward backtests with costs and a one-day signal lag.',
+    ],
+    done: 'Risk dashboard; backtest with costs.',
+  },
+  {
+    id: 'supply-chain',
+    num: '09',
+    status: 'queued',
+    when: 'Dec 2026',
+    title: 'Late Delivery Lab',
+    kind: 'Supply chain',
+    cats: ['ML', 'BI'],
+    tags: ['BigQuery ML', 'Looker Studio', 'PuLP'],
+    summary: 'What drives late deliveries, and which reorder policy balances service against holding cost.',
+    question: 'What drives late deliveries, and what reorder policy balances service level against holding cost?',
+    steps: [
+      'Delivery KPIs in BigQuery.',
+      'Late-delivery model using order-time features only.',
+      'Safety stock, EOQ, Monte Carlo policy simulation.',
+    ],
+    done: 'KPIs, BQML model, inventory policy.',
+  },
+  {
+    id: 'music-pop',
+    num: '10',
+    status: 'queued',
+    when: 'Dec 2026',
+    title: 'What Makes a Hit',
+    kind: 'Music ML',
+    hobby: 'Dancing',
+    cats: ['ML'],
+    tags: ['XGBoost', 'SHAP', 'Streamlit'],
+    summary: 'Which audio features relate to track popularity — reported honestly, weak signal included.',
+    question: 'Which audio and metadata features relate to popularity, and what natural clusters exist?',
+    steps: [
+      'Artist-grouped cross-validation to avoid leakage.',
+      'SHAP drivers; association, not causation.',
+      'Audio clusters + Streamlit similarity app.',
+    ],
+    done: 'Streamlit app deployed.',
+  },
+  {
+    id: 'movie-recs',
+    num: '11',
+    status: 'queued',
+    when: 'Dec 2026',
+    title: 'Next Movie Engine',
+    kind: 'Recommender',
+    hobby: 'Movies',
+    cats: ['Big data', 'ML'],
+    tags: ['PySpark', 'ALS', 'Databricks'],
+    summary: 'A Spark recommender judged on what you actually watch next, not on RMSE.',
+    question: 'Do collaborative-filtering recommendations beat popularity at ranking what a user watches next?',
+    steps: [
+      'Temporal per-user holdout on MovieLens.',
+      'ALS vs popularity and item-kNN baselines.',
+      'NDCG, MAP, coverage and popularity bias.',
+    ],
+    done: 'Ranking metrics reported.',
+  },
+  {
+    id: 'ipl-wp',
+    num: '12',
+    status: 'queued',
+    when: 'Jan 2027',
+    title: 'IPL Win Probability',
+    kind: 'Sports analytics',
+    cats: ['ML', 'BI'],
+    tags: ['DuckDB', 'LightGBM', 'Tableau'],
+    summary: 'Ball-by-ball win probability for every chase, and which players move it most.',
+    question: 'What is the chasing team’s win probability at every ball, and which players add the most?',
+    steps: [
+      'Ball-level state table from Cricsheet.',
+      'Calibrated LightGBM with monotonic constraints.',
+      'Win probability added per batter and bowler.',
+    ],
+    done: 'Win probability calibrated; dashboard live.',
+  },
+  {
+    id: 'hcp-targeting',
+    num: '13',
+    status: 'queued',
+    when: 'Jan 2027',
+    title: 'Prescriber Targeting',
+    kind: 'Healthcare · consulting',
+    cats: ['BI'],
+    tags: ['DuckDB', 'Power BI', 'CMS Part D'],
+    summary: 'Which prescribers a brand team should prioritise, and how to balance territories.',
+    question:
+      'Which prescribers should a brand team prioritise in a therapeutic class, and how should territories be balanced?',
+    steps: [
+      'Concentration, mix and trend on public CMS data.',
+      'A/B/C tiers from volume × growth.',
+      'Illustrative territory alignment + call plan memo.',
+    ],
+    done: 'Dashboard plus case memo.',
+  },
+];
+
+/**
+ * Filter pills on the Work page. 'All', 'Shipped' and 'Queue' are built in;
+ * any other label filters by a project's `cats`.
+ */
+export const workFilters = ['All', 'Shipped', 'Queue', 'ML', 'Finance', 'BI'];
+
+/** Work page header copy. Supports *emphasis* and the {shipped}/{queued}/{total} counters. */
+export const workPage = {
+  label: '(02) Index — {total} projects',
+  lead: '{shipped:word} shipped. {queued:word} in the queue, *built in public* through January.',
+};

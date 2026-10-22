@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import RevealLines from '@components/RevealLines.astro';
+---
+
+<BaseLayout title="Not found" footerCta={false}>
+  <section class="page-hero" style="gap:32px;min-height:70vh;justify-content:flex-end">
+    <span class="label">(404) Row not found</span>
+    <h1 class="serif" style="margin:0;font-size:clamp(80px,14vw,220px);line-height:.85;letter-spacing:-.03em">
+      <RevealLines lines={['Null', '*reference.*']} />
+    </h1>
+    <a href="/" data-label="Home" class="pill" style="align-self:flex-start">← Back to the index</a>
+  </section>
+</BaseLayout>

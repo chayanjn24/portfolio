@@ -1,0 +1,573 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import RevealLines from '@components/RevealLines.astro';
+import JobEntry from '@components/resume/JobEntry.astro';
+import { site } from '@content/site';
+import { resume } from '@content/resume';
+import { getProject, projectHref } from '@lib/projects';
+import { rich } from '@lib/text';
+
+const short = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
+
+// Section letters (A), (B)… follow page order and skip anything left empty in resume.ts.
+const sections = [
+  ['profile', 'Profile', true],
+  ['glance', 'At a glance', resume.highlights.length > 0],
+  ['experience', 'Experience', resume.jobs.length > 0],
+  ['research', 'Research', resume.research.length > 0],
+  ['projects', 'Projects', resume.projects.length > 0],
+  ['skills', 'Skills', resume.skills.length > 0],
+  ['certs', 'Certifications', resume.certifications.length > 0],
+  ['leadership', 'Leadership & activities', resume.leadership.length > 0],
+  ['education', 'Education', true],
+] as const;
+const label: Record<string, string> = {};
+sections
+  .filter(([, , on]) => on)
+  .forEach(([key, name], i) => (label[key] = `<span class="letter">(${String.fromCharCode(65 + i)}) </span>${name}`));
+---
+
+<BaseLayout title="Résumé">
+  <section class="page-hero head">
+    <div class="top">
+      <div class="stack" style="gap:20px">
+        <span class="label">{resume.label}</span>
+        <h1 class="title serif">
+          <RevealLines lines={[site.firstName, `*${site.lastName}*`]} step={100} />
+        </h1>
+      </div>
+      <div class="actions no-print">
+        <button type="button" class="pill pill--solid" data-magnetic data-print>Print / save PDF ↓</button>
+        {
+          site.resumePdf && (
+            <a href={site.resumePdf} download class="pill">
+              One-page PDF ↓
+            </a>
+          )
+        }
+      </div>
+    </div>
+    <div class="contact">
+      <span>{resume.location}</span>
+      <a href={`mailto:${site.email}`}>{site.email}</a>
+      {site.phone && <a href={`tel:${site.phone.replace(/[\s-]/g, '')}`}>{site.phone}</a>}
+      <a href={site.linkedin} target="_blank" rel="noopener"><span class="screen">LinkedIn ↗</span><span class="print">{short(site.linkedin)}</span></a>
+      <a href={site.github} target="_blank" rel="noopener"><span class="screen">GitHub ↗</span><span class="print">{short(site.github)}</span></a>
+    </div>
+    <span class="label label--sm open-to">{resume.openTo}</span>
+  </section>
+
+  <section class="body">
+    <div class="block" data-reveal="fade">
+      <span class="label" set:html={label.profile} />
+      <p class="content profile serif" set:html={rich(resume.profile)} />
+    </div>
+
+    {
+      label.glance && (
+        <div class="block glance-block">
+          <span class="label" set:html={label.glance} />
+          <div class="content glance">
+            {resume.highlights.map((h, i) => (
+              <div class="stat" data-reveal="fade" data-delay={i * 80}>
+                <span class="stat__value">{h.value}</span>
+                <span class="stat__label">{h.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    {
+      label.experience && (
+        <div class="block">
+          <span class="label" set:html={label.experience} />
+          <div class="content stack" style="gap:56px">
+            {resume.jobs.map((job) => (
+              <div data-reveal="fade">
+                <JobEntry job={job} />
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    {
+      label.research && (
+        <div class="block">
+          <span class="label" set:html={label.research} />
+          <div class="content stack" style="gap:40px">
+            {resume.research.map((job) => (
+              <div data-reveal="fade">
+                <JobEntry job={job} />
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    {
+      label.projects && (
+        <div class="block">
+          <span class="label" set:html={label.projects} />
+          <div class="content stack" style="gap:40px">
+            {resume.projects.map((p) => {
+              const page = p.id ? getProject(p.id) : undefined;
+              return (
+                <article class="project" data-reveal="fade">
+                  <div class="item-head">
+                    {page ? (
+                      <a href={projectHref(page)} data-label={page.title} class="org serif">
+                        {p.title} ↗
+                      </a>
+                    ) : (
+                      <span class="org serif">{p.title}</span>
+                    )}
+                    <span class="when">{p.when}</span>
+                  </div>
+                  <span class="label label--sm">{p.stack}</span>
+                  <ul class="points">
+                    {p.points.map((pt) => (
+                      <li>
+                        <span class="dash">—</span>
+                        <span set:html={rich(pt)} />
+                      </li>
+                    ))}
+                  </ul>
+                  {p.links && (
+                    <div class="links no-print">
+                      {p.links.map((l) => (
+                        <a href={l.href} target="_blank" rel="noopener" class="label label--sm">
+                          {l.label} ↗
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      )
+    }
+
+    {
+      label.skills && (
+        <div class="block">
+          <span class="label" set:html={label.skills} />
+          <div class="content skills">
+            {resume.skills.map((s) => (
+              <div class="stack" style="gap:8px" data-reveal="fade">
+                <span class="skill-k serif">{s.group}</span>
+                <span class="text small">{s.items}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    {
+      label.certs && (
+        <div class="block">
+          <span class="label" set:html={label.certs} />
+          <ul class="content rows">
+            {resume.certifications.map((c) => (
+              <li class="row" data-reveal="fade">
+                <span class="row-main">
+                  {c.href ? (
+                    <a href={c.href} target="_blank" rel="noopener">
+                      {c.name} ↗
+                    </a>
+                  ) : (
+                    c.name
+                  )}
+                  {c.issuer && <span class="row-sub"> · {c.issuer}</span>}
+                </span>
+                <span class="row-when">{c.when}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+
+    {
+      label.leadership && (
+        <div class="block">
+          <span class="label" set:html={label.leadership} />
+          <div class="content stack" style="gap:28px">
+            {resume.leadership.map((l) => (
+              <div class="lead-item" data-reveal="fade">
+                <div class="item-head">
+                  <div class="stack" style="gap:6px">
+                    <span class="lead-role serif">{l.role}</span>
+                    <span class="label label--sm">{l.org}</span>
+                  </div>
+                  <span class="when">{l.when}</span>
+                </div>
+                <span class="text">{l.description}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    <div class="block last" data-reveal="fade">
+      <span class="label" set:html={label.education} />
+      <div class="content stack" style="gap:28px">
+        <div class="item-head">
+          <div class="stack" style="gap:6px">
+            <span class="org serif">{resume.education.school}</span>
+            <span class="label label--sm">{resume.education.degree} · {resume.education.location}</span>
+          </div>
+          <span class="when">{resume.education.when}</span>
+        </div>
+        <ul class="rows">
+          {
+            resume.extras.map((x) => (
+              <li class="row">
+                <span class="row-sub">{x.label}</span>
+                <span class="row-main">{x.value}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  document.querySelector('[data-print]')?.addEventListener('click', () => window.print());
+</script>
+
+<style>
+  .head {
+    padding-bottom: clamp(48px, 6vw, 80px);
+    gap: clamp(24px, 3vw, 40px);
+    background: radial-gradient(50% 50% at 90% 0%, rgba(255, 77, 0, 0.12), rgba(11, 10, 9, 0) 70%);
+  }
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .title {
+    margin: 0;
+    font-size: clamp(64px, 10vw, 168px);
+    line-height: 0.88;
+    letter-spacing: -0.025em;
+  }
+  .actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .contact {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+    gap: 16px 24px;
+    border-top: 1px solid var(--line);
+    padding-top: 24px;
+    font-size: 13px;
+    color: var(--text-2);
+  }
+  .contact a {
+    color: var(--text);
+  }
+  .print {
+    display: none;
+  }
+
+  .body {
+    padding: 0 var(--gutter) clamp(80px, 10vw, 150px);
+    display: flex;
+    flex-direction: column;
+  }
+  .block {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    gap: 20px 48px;
+    padding: clamp(32px, 4vw, 56px) 0;
+    border-top: 1px solid var(--line);
+  }
+  .block.last {
+    border-bottom: 1px solid var(--line);
+  }
+  .content {
+    grid-column: span 2;
+    min-width: 0;
+    margin: 0;
+  }
+  @media (max-width: 680px) {
+    .content {
+      grid-column: 1 / -1;
+    }
+  }
+  .profile {
+    font-size: clamp(26px, 2.6vw, 40px);
+    line-height: 1.15;
+    text-wrap: pretty;
+  }
+
+  .glance {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+    gap: 0 24px;
+  }
+  .glance .stat__value {
+    font-size: clamp(44px, 4.6vw, 76px);
+  }
+
+  .item-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px 24px;
+    flex-wrap: wrap;
+    align-items: baseline;
+  }
+  .org {
+    font-size: clamp(30px, 3vw, 46px);
+    line-height: 1;
+  }
+  .when {
+    font-size: 12px;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  .project {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .points {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+  }
+  .points li {
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr);
+    gap: 8px;
+    padding: 12px 0;
+    border-top: 1px solid var(--hairline);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-2);
+  }
+  .points :global(em) {
+    font-style: normal;
+    color: var(--text);
+  }
+  .dash {
+    color: var(--accent);
+  }
+  .links {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .links a {
+    color: var(--accent);
+  }
+
+  .text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-2);
+  }
+  .small {
+    font-size: 13px;
+  }
+  .skills {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+    gap: 28px 40px;
+  }
+  .skill-k {
+    font-size: 28px;
+    line-height: 1;
+  }
+
+  .rows {
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 6px 24px;
+    flex-wrap: wrap;
+    padding: 14px 0;
+    border-top: 1px solid var(--hairline);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .row-main {
+    color: var(--text);
+  }
+  .row-sub {
+    color: var(--muted);
+  }
+  .row-when {
+    font-size: 12px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .lead-item {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .lead-role {
+    font-size: clamp(26px, 2.4vw, 36px);
+    line-height: 1;
+  }
+
+  /* ---------- print: compact and light; the full version runs to about two pages ---------- */
+  @media print {
+    @page {
+      margin: 12mm 13mm;
+    }
+    .head {
+      padding: 0 0 10px;
+      gap: 8px;
+      background: none;
+    }
+    .title {
+      font-size: 38px;
+    }
+    .title :global(.line) {
+      display: inline-block;
+      padding-right: 0.25em;
+    }
+    .head > .stack > .label,
+    .top .label {
+      display: none;
+    }
+    .contact {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 18px;
+      padding-top: 8px;
+      font-size: 10px;
+    }
+    .open-to {
+      font-size: 9px;
+    }
+    .screen {
+      display: none;
+    }
+    .print {
+      display: inline;
+    }
+    .body {
+      padding: 0;
+    }
+    /* Single column: the label sits above its section, giving the text the full page width. */
+    .block {
+      grid-template-columns: 1fr;
+      gap: 6px;
+      padding: 9px 0;
+    }
+    .content {
+      grid-column: auto;
+    }
+    .block.glance-block {
+      display: none;
+    }
+    .profile,
+    .text,
+    .row,
+    .points li,
+    .contact {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+    .content.stack {
+      gap: 12px !important;
+    }
+    .block > .label {
+      font-size: 9px;
+      color: var(--accent);
+    }
+    .block > .label :global(.letter) {
+      display: none;
+    }
+    .profile {
+      font-size: 11px;
+      line-height: 1.45;
+    }
+    .profile :global(em) {
+      font-style: normal;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .glance {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0 16px;
+    }
+    .glance .stat {
+      padding: 6px 0;
+      gap: 2px;
+      break-inside: avoid;
+    }
+    .glance .stat__value {
+      font-size: 22px;
+    }
+    .glance .stat__label {
+      font-size: 9px;
+    }
+    .org {
+      font-size: 18px;
+    }
+    .when,
+    .text,
+    .row,
+    .points li {
+      font-size: 10px;
+    }
+    .points li {
+      padding: 3px 0;
+      line-height: 1.4;
+    }
+    .points :global(em) {
+      font-weight: 500;
+    }
+    .project,
+    .lead-item {
+      gap: 4px;
+      break-inside: avoid;
+    }
+    .skills {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px 20px;
+    }
+    .skill-k {
+      font-size: 14px;
+    }
+    .lead-role {
+      font-size: 15px;
+    }
+    .row {
+      padding: 3px 0;
+    }
+    .row-when {
+      font-size: 9px;
+    }
+  }
+</style>

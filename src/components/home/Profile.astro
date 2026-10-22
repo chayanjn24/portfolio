@@ -1,0 +1,47 @@
+---
+import { profile } from '@content/home';
+import { rich, pad2 } from '@lib/text';
+---
+
+<section class="section profile">
+  <div class="intro">
+    <span class="label">{profile.label}</span>
+    <p class="serif" data-reveal="fade" set:html={rich(profile.text)} />
+  </div>
+  <div class="stats">
+    {
+      profile.stats.map((s, i) => (
+        <div class="stat" data-reveal="fade" data-delay={i * 100}>
+          <span class="label label--sm">{pad2(i + 1)}</span>
+          <span class="stat__value">{s.value}</span>
+          <span class="stat__label">{s.label}</span>
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .profile {
+    gap: clamp(64px, 8vw, 120px);
+  }
+  .intro {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+    gap: 24px;
+  }
+  .intro p {
+    grid-column: span 3;
+    min-width: 0;
+    margin: 0;
+    font-size: clamp(32px, 4.4vw, 72px);
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+    text-wrap: pretty;
+  }
+  @media (max-width: 960px) {
+    .intro p {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

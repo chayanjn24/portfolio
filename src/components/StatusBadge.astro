@@ -1,0 +1,15 @@
+---
+import type { Project } from '@content/types';
+import { badge } from '@lib/projects';
+
+interface Props {
+  project: Project;
+  /** Longer wording used on the project page ("Up next · …", "Queued · …"). */
+  long?: boolean;
+}
+
+const { project, long = false } = Astro.props;
+const b = badge(project, long);
+---
+
+<span class:list={['badge', `badge--${b.tone}`]}>{b.text}</span>

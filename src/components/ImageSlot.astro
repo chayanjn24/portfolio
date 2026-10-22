@@ -1,0 +1,70 @@
+---
+/**
+ * An image with a fixed aspect ratio. If `src` is empty, shows a labelled
+ * placeholder so you can see where a photo still needs to go.
+ */
+interface Props {
+  src?: string;
+  alt?: string;
+  /** Shown when there's no image yet. */
+  placeholder: string;
+  /** CSS aspect-ratio, e.g. '16/10'. */
+  ratio: string;
+  class?: string;
+  loading?: 'lazy' | 'eager';
+}
+
+const { src, alt = '', placeholder, ratio, class: className, loading = 'lazy' } = Astro.props;
+---
+
+<div class:list={['slot', className]} style={`aspect-ratio:${ratio}`}>
+  {
+    src ? (
+      <img src={src} alt={alt} loading={loading} decoding="async" />
+    ) : (
+      <span class="empty">
+        <span>+</span>
+        {placeholder}
+      </span>
+    )
+  }
+</div>
+
+<style>
+  .slot {
+    position: relative;
+    width: 100%;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .empty {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 16px;
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--faint);
+  }
+  .empty span {
+    font-family: var(--serif);
+    font-size: 32px;
+    line-height: 1;
+    color: var(--dim);
+  }
+</style>

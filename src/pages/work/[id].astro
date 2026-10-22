@@ -1,0 +1,305 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ImageSlot from '@components/ImageSlot.astro';
+import StatusBadge from '@components/StatusBadge.astro';
+import { projects } from '@content/projects';
+import { site } from '@content/site';
+import type { Project } from '@content/types';
+import { nextProject, projectHref } from '@lib/projects';
+import { pad2 } from '@lib/text';
+
+export function getStaticPaths() {
+  return projects.map((p) => ({ params: { id: p.id }, props: { p } }));
+}
+
+interface Props {
+  p: Project;
+}
+const { p } = Astro.props;
+const isShipped = p.status === 'shipped';
+const next = nextProject(p);
+---
+
+<BaseLayout title={p.title} description={p.summary} footerCta={false}>
+  <section class="page-hero hero">
+    <div class="topbar label">
+      <a href="/work" data-label="Work" class="back">← All work</a>
+      <StatusBadge project={p} long />
+    </div>
+    <div class="stack" style="gap:20px">
+      <span class="label kind">({p.num}) {p.kind}</span>
+      <h1 class="title serif">{p.title}</h1>
+    </div>
+    <div class="meta">
+      <div class="col wide">
+        <span class="label label--sm label--faint">Summary</span>
+        <span class="summary serif">{p.summary}</span>
+      </div>
+      <div class="col">
+        <span class="label label--sm label--faint">Stack</span>
+        <div class="tags">{p.tags.map((t) => <span>{t}</span>)}</div>
+      </div>
+      <div class="col">
+        <span class="label label--sm label--faint">{isShipped ? 'Status' : 'Planned'}</span>
+        <span class="small">{isShipped ? 'Shipped · live' : p.when}</span>
+        {p.hobby && <a href="/about" data-label="About" class="fuel">Fuelled by {p.hobby} ↗</a>}
+      </div>
+    </div>
+  </section>
+
+  {
+    isShipped && (
+      <section class="cover-wrap">
+        <div data-reveal="fade">
+          <ImageSlot src={p.cover} alt={`${p.title} cover`} placeholder={p.coverPlaceholder ?? p.title} ratio="16/8" class="cover" loading="eager" />
+        </div>
+      </section>
+    )
+  }
+
+  <section class="case">
+    <div class="stack" style="gap:20px">
+      <span class="label">(A) The question</span>
+      <p class="question serif" data-reveal="fade">{p.question}</p>
+    </div>
+    <div class="stack" style="gap:20px">
+      <span class="label">(B) {isShipped ? 'What I did' : 'The plan'}</span>
+      <ol class="steps">
+        {
+          p.steps.map((s, i) => (
+            <li data-reveal="fade" data-delay={i * 80}>
+              <span class="step-n">{pad2(i + 1)}</span>
+              <span>{s}</span>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  {
+    isShipped && (
+      <section class="results">
+        <span class="label">(C) Results</span>
+        <div class="stats">
+          {(p.results ?? []).map(([value, label], i) => (
+            <div class="stat" data-reveal="fade" data-delay={i * 100}>
+              <span class="stat__value">{value}</span>
+              <span class="stat__label">{label}</span>
+            </div>
+          ))}
+        </div>
+        <div class="links">
+          {(p.links ?? []).map((l) => (
+            <a href={l.href} target="_blank" rel="noopener" data-magnetic class="pill pill--solid">
+              {l.label} ↗
+            </a>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  {
+    !isShipped && (
+      <section class="status-wrap">
+        <div class="status">
+          <div class="col">
+            <span class="label label--sm label--faint">Build window</span>
+            <span class="when serif">{p.when}</span>
+          </div>
+          <div class="col">
+            <span class="label label--sm label--faint">Done when</span>
+            <span class="body">{p.done}</span>
+          </div>
+          <a href={site.github} target="_blank" rel="noopener" data-magnetic class="pill follow">
+            Follow on GitHub ↗
+          </a>
+        </div>
+      </section>
+    )
+  }
+
+  <a href={projectHref(next)} data-label={next.title} class="next">
+    <span class="label">Next project — {next.num}</span>
+    <span class="next-title serif">{next.title} →</span>
+  </a>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-top: clamp(130px, 17vh, 190px);
+    padding-bottom: clamp(48px, 6vw, 80px);
+    gap: clamp(32px, 4vw, 56px);
+    background: radial-gradient(50% 50% at 15% 0%, rgba(255, 77, 0, 0.12), rgba(11, 10, 9, 0) 70%);
+  }
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .back {
+    color: var(--text-2);
+  }
+  .kind {
+    color: var(--accent);
+  }
+  .title {
+    margin: 0;
+    font-size: clamp(60px, 10vw, 168px);
+    line-height: 0.88;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+    max-width: 14ch;
+  }
+  .meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+    gap: 24px;
+    border-top: 1px solid var(--line);
+    padding-top: 24px;
+  }
+  .col {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .wide {
+    grid-column: span 2;
+    min-width: 0;
+  }
+  @media (max-width: 520px) {
+    .wide {
+      grid-column: 1 / -1;
+    }
+  }
+  .summary {
+    font-size: clamp(22px, 2vw, 30px);
+    line-height: 1.2;
+    text-wrap: pretty;
+  }
+  .tags {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 13px;
+    color: var(--text-2);
+  }
+  .small {
+    font-size: 13px;
+    color: var(--text-2);
+  }
+  .fuel {
+    font-size: 12px;
+    color: var(--accent);
+  }
+
+  .cover-wrap {
+    padding: 0 var(--gutter);
+  }
+  .cover-wrap :global(.cover) {
+    min-height: 260px;
+  }
+
+  .case {
+    padding: clamp(80px, 10vw, 150px) var(--gutter);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr));
+    gap: clamp(40px, 6vw, 96px);
+  }
+  .question {
+    margin: 0;
+    font-size: clamp(34px, 3.8vw, 60px);
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+    text-wrap: pretty;
+  }
+  .steps {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid var(--line);
+  }
+  .steps li {
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr);
+    gap: 12px;
+    padding: 18px 0;
+    border-top: 1px solid var(--line);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-2);
+  }
+  .step-n {
+    color: var(--accent);
+    font-size: 11px;
+    padding-top: 3px;
+  }
+
+  .results {
+    padding: 0 var(--gutter) clamp(80px, 10vw, 150px);
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+  .results .stat {
+    padding-bottom: 0;
+  }
+  .links {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .status-wrap {
+    padding: 0 var(--gutter) clamp(80px, 10vw, 150px);
+  }
+  .status {
+    border: 1px dashed var(--line-strong);
+    border-radius: 6px;
+    padding: clamp(24px, 3vw, 40px);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+    gap: 28px;
+    align-items: end;
+    background: radial-gradient(60% 100% at 100% 100%, rgba(255, 77, 0, 0.12), rgba(11, 10, 9, 0));
+  }
+  .when {
+    font-size: clamp(48px, 5vw, 80px);
+    line-height: 0.9;
+    color: var(--accent);
+  }
+  .body {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-2);
+  }
+  .follow {
+    justify-self: start;
+    min-height: 48px;
+  }
+
+  .next {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: clamp(80px, 10vw, 150px) var(--gutter);
+    border-top: 1px solid var(--line);
+    color: var(--text);
+    transition: background 0.5s;
+  }
+  .next:hover {
+    background: var(--surface-2);
+    color: var(--accent);
+  }
+  .next-title {
+    font-style: italic;
+    font-size: clamp(56px, 10vw, 168px);
+    line-height: 0.88;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+</style>

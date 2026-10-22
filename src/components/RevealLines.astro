@@ -1,0 +1,25 @@
+---
+/**
+ * Renders each string as its own line that slides up into view.
+ * Strings support *emphasis* and {counters}.
+ */
+import { rich } from '@lib/text';
+
+interface Props {
+  lines: string[];
+  /** ms between lines */
+  step?: number;
+  /** ms before the first line */
+  delay?: number;
+}
+
+const { lines, step = 120, delay = 0 } = Astro.props;
+---
+
+{
+  lines.map((line, i) => (
+    <span class="line">
+      <span data-reveal="line" data-delay={delay + i * step || undefined} set:html={rich(line)} />
+    </span>
+  ))
+}

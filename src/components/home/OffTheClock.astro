@@ -1,0 +1,73 @@
+---
+import { offTheClock } from '@content/home';
+import { fill } from '@lib/text';
+import RevealLines from '@components/RevealLines.astro';
+---
+
+<section class="section">
+  <div class="section-head">
+    <div class="stack" style="gap:14px">
+      <span class="label">{offTheClock.label}</span>
+      <h2 class="h2"><RevealLines lines={[offTheClock.title]} /></h2>
+    </div>
+    <a href="/about" data-label="About" data-magnetic class="pill">{fill(offTheClock.link)}</a>
+  </div>
+  <div class="list">
+    {
+      offTheClock.items.map((h) => (
+        <a href="/about" data-label="About" class="row">
+          <span class="name serif">{h.name}</span>
+          <span class="detail">{h.detail}</span>
+        </a>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .list {
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid var(--line);
+  }
+  .row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, auto);
+    gap: 8px 32px;
+    align-items: center;
+    padding: clamp(14px, 1.8vw, 22px) 0;
+    border-top: 1px solid var(--line);
+    color: var(--text);
+  }
+  .name {
+    font-size: clamp(44px, 6.6vw, 108px);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    transition:
+      color 0.35s,
+      transform 0.6s var(--ease-out);
+  }
+  .detail {
+    font-size: 12px;
+    line-height: 1.5;
+    letter-spacing: 0.04em;
+    max-width: 34ch;
+    text-align: right;
+    color: var(--muted);
+    transition: color 0.35s;
+  }
+  /* Hover one → it turns orange italic; the others dim. */
+  @media (hover: hover) {
+    .list:hover .name {
+      color: var(--dim);
+    }
+    .row:hover .name {
+      color: var(--accent);
+      font-style: italic;
+      transform: translateX(24px);
+    }
+    .row:hover .detail {
+      color: var(--text);
+    }
+  }
+</style>

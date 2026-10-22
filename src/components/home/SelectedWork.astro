@@ -1,0 +1,178 @@
+---
+import { selectedWork } from '@content/home';
+import { shipped, queue, queueRange, projectHref } from '@lib/projects';
+import { fill, rich } from '@lib/text';
+import ImageSlot from '@components/ImageSlot.astro';
+---
+
+<section class="hs" data-hs>
+  <div class="sticky">
+    <div class="head">
+      <div class="stack" style="gap:14px">
+        <span class="label">{fill(selectedWork.label)}</span>
+        <h2 class="title serif" set:html={rich(selectedWork.title)} />
+      </div>
+      <a href="/work" data-label="Work" data-magnetic class="pill">{fill(selectedWork.allLink)}</a>
+    </div>
+
+    <div class="viewport">
+      <div class="track" data-track>
+        {
+          shipped.map((p) => (
+            <div class="card">
+              <ImageSlot src={p.cover} alt={`${p.title} preview`} placeholder={p.coverPlaceholder ?? p.title} ratio="16/10" />
+              <div class="card-meta label label--sm">
+                <span class="num">{p.num}</span>
+                <span>{p.kind}</span>
+              </div>
+              <a href={projectHref(p)} data-label={p.title} class="card-title serif">
+                {p.title} ↗
+              </a>
+              <span class="card-summary">{p.summary}</span>
+            </div>
+          ))
+        }
+        <a href="/work" data-label="Work" class="card queue">
+          <div class="queue-box">
+            <span class="queue-count serif">+{queue.length}</span>
+            <div class="queue-list">{queue.map((p) => <span>{p.title}</span>)}</div>
+          </div>
+          <div class="card-meta label label--sm"><span>Queue</span><span>{queueRange}</span></div>
+          <span class="card-title serif" set:html={rich(selectedWork.queueTitle)} />
+        </a>
+      </div>
+    </div>
+
+    <div class="bar"><div data-bar></div></div>
+  </div>
+</section>
+
+<script>
+  // Vertical scroll progress through the section → horizontal track offset.
+  const section = document.querySelector<HTMLElement>('[data-hs]');
+  const track = section?.querySelector<HTMLElement>('[data-track]');
+  const bar = section?.querySelector<HTMLElement>('[data-bar]');
+  if (section && track) {
+    const update = () => {
+      const r = section.getBoundingClientRect();
+      const total = r.height - window.innerHeight;
+      const p = Math.min(1, Math.max(0, -r.top / (total || 1)));
+      const max = Math.max(0, track.scrollWidth - track.parentElement!.clientWidth);
+      track.style.transform = `translate3d(${-p * max}px,0,0)`;
+      if (bar) bar.style.transform = `scaleX(${p})`;
+    };
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  }
+</script>
+
+<style>
+  .hs {
+    position: relative;
+    height: 340vh;
+    border-top: 1px solid var(--line);
+  }
+  .sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: clamp(20px, 4vh, 44px);
+    padding: clamp(76px, 10vh, 96px) 0 clamp(20px, 4vh, 36px);
+  }
+  .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 16px 32px;
+    flex-wrap: wrap;
+    padding: 0 var(--gutter);
+  }
+  .title {
+    margin: 0;
+    font-size: clamp(48px, 6.4vw, 104px);
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+  }
+  .viewport {
+    overflow: hidden;
+    flex: 0 1 auto;
+    min-height: 0;
+  }
+  .track {
+    display: flex;
+    gap: clamp(16px, 2.4vw, 36px);
+    width: max-content;
+    padding: 0 var(--gutter);
+    will-change: transform;
+  }
+  .card {
+    width: clamp(280px, min(40vw, 72vh), 620px);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .card-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .num {
+    color: var(--accent);
+  }
+  .card-title {
+    font-size: clamp(30px, 3vw, 48px);
+    line-height: 0.95;
+    letter-spacing: -0.01em;
+  }
+  .card-title :global(em) {
+    color: inherit;
+  }
+  .card-summary {
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--text-2);
+    max-width: 48ch;
+  }
+  .queue-box {
+    aspect-ratio: 16/10;
+    border: 1px dashed var(--line-strong);
+    border-radius: 4px;
+    padding: clamp(18px, 2vw, 28px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+    background: radial-gradient(80% 80% at 100% 100%, rgba(255, 77, 0, 0.16), rgba(11, 10, 9, 0));
+  }
+  .queue-count {
+    font-size: clamp(56px, 6vw, 96px);
+    line-height: 0.85;
+    color: var(--accent);
+  }
+  .queue-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-2);
+  }
+  .bar {
+    margin: 0 var(--gutter);
+    height: 1px;
+    background: var(--line);
+  }
+  .bar div {
+    height: 1px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    box-shadow: 0 0 10px var(--accent);
+  }
+</style>
