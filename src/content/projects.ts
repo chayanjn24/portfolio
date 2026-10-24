@@ -107,6 +107,7 @@ const list: Omit<Project, 'num'>[] = [
       ['815', 'real transactions, sanitized for the shareable demo'],
     ],
     links: [{ label: 'Open the notebook', href: 'https://colab.research.google.com/drive/1bC1_w7qK4CpFu_IVKJXIYP90GaAki7WS?usp=sharing' }],
+    cover: '/images/projects/expense-tracker.png',
     coverPlaceholder: 'Expense Tracker dashboard screenshot',
   },
   {

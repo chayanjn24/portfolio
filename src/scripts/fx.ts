@@ -74,7 +74,9 @@ document.querySelectorAll<HTMLElement>('[data-reveal]').forEach((el) => {
   // Items visible on first load wait for the curtain to lift.
   const delay = Number(el.dataset.delay ?? 0) + (performance.now() - loadedAt < 1500 ? 450 : 0);
   el.style.setProperty('--d', `${delay}ms`);
-  if (el.dataset.reveal === 'line' && el.parentElement) {
+  // Lines and wipes start fully clipped, and a clipped element never counts as
+  // visible to the observer, so watch the parent instead.
+  if ((el.dataset.reveal === 'line' || el.dataset.reveal === 'wipe') && el.parentElement) {
     (el.parentElement as HTMLElement & { __reveal?: HTMLElement }).__reveal = el;
     io.observe(el.parentElement);
   } else {

@@ -592,12 +592,19 @@ const clock = `<span data-clock data-tz="${site.clock.timeZone}">--:--</span> ${
   }
 
   @media (max-width: 860px) {
-    .links,
-    .status {
+    .links {
+      display: none;
+    }
+    /* Phones keep just the now-playing pill, next to Menu; the clock and theme live in the menu. */
+    .status > :not(.np) {
       display: none;
     }
     .nav {
-      grid-template-columns: 1fr auto;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+    }
+    .np-text {
+      display: block;
+      max-width: 34vw;
     }
     .menu-btn {
       display: block;

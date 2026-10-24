@@ -31,7 +31,11 @@ async function accessToken(): Promise<string | null> {
     },
     body: new URLSearchParams({ grant_type: 'refresh_token', refresh_token: refresh }),
   });
-  if (!res.ok) return null;
+  if (!res.ok) {
+    // Shows up in Vercel → Logs; Spotify's error text never includes the secrets.
+    console.error('Spotify token refresh failed', res.status, await res.text());
+    return null;
+  }
   return ((await res.json()) as { access_token?: string }).access_token ?? null;
 }
 
