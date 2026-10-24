@@ -184,10 +184,16 @@ export const resume = {
     {
       title: 'Campus Crave',
       id: 'campus-crave',
-      stack: 'Flutter · Dart · REST APIs',
-      when: '2024',
-      links: [{ label: 'GitHub', href: 'https://github.com/chayanjn24/campus_crave' }],
-      points: ['Built a *cross-platform mobile app* in Flutter from a single codebase, with backend API integration end to end.'],
+      stack: 'Flutter · Dart · Riverpod',
+      when: '2024 · rebuilt 2026',
+      links: [
+        { label: 'Live demo', href: 'https://chayanjn24.github.io/campus_crave/' },
+        { label: 'GitHub', href: 'https://github.com/chayanjn24/campus_crave' },
+      ],
+      points: [
+        'Built a *campus food delivery app* for NIT Silchar where students order from hostel canteens and other students deliver for a fee paid into an in-app wallet.',
+        'Designed role-based flows for students, runners and vendors, with live order tracking and unit tests on the order rules, fees and wallet.',
+      ],
     },
   ] satisfies ResumeProject[],
 
