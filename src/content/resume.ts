@@ -173,6 +173,21 @@ export const resume = {
       ],
     },
     {
+      title: 'Movie Recommender',
+      id: 'movie-recs',
+      stack: 'PySpark · Spark MLlib · Databricks · NumPy',
+      when: '2026',
+      links: [
+        { label: 'GitHub', href: 'https://github.com/chayanjn24/movie-recommender' },
+        { label: 'Notebooks', href: 'https://chayanjn24.github.io/movie-recommender/' },
+      ],
+      points: [
+        'Built a *Spark ALS recommender* on Databricks and scaled it from 100K to *25M MovieLens ratings* (162K users), tested on a time-based split of what each user watched next.',
+        'Implicit ALS beat a popularity baseline by *94% on NDCG@10* at 25M (59% at 100K), while the model with the best rating error (RMSE 0.887) ranked worst — evidence for judging recommenders on ranking.',
+        'Measured scaling on serverless compute: *100× more data took 8.3× longer* to train (41 s → 339 s); built top-10 lists from the ALS factors in NumPy where Spark’s built-in method was blocked.',
+      ],
+    },
+    {
       title: 'Student Performance Analysis Dashboard',
       stack: 'Power BI · DAX · SQL · ETL',
       when: '2024',
@@ -198,13 +213,13 @@ export const resume = {
   ] satisfies ResumeProject[],
 
   skills: [
-    { group: 'SQL & Python', items: 'SQL (joins, CTEs, window functions, query optimisation — MySQL, Redshift, AWS Athena, Snowflake), Python (Pandas, NumPy, Scikit-learn)' },
-    { group: 'Analysis & modelling', items: 'Data reconciliation and validation, root-cause and variance analysis, cohort analysis, A/B comparison, forecasting (SARIMA, baselines), anomaly detection (Isolation Forest, robust z-scores), text classification (TF-IDF), clustering (KMeans), logistic regression, XGBoost, model evaluation (AUC, F1, precision and recall)' },
+    { group: 'SQL & Python', items: 'SQL (joins, CTEs, window functions, query optimisation — MySQL, Redshift, AWS Athena, Snowflake), Python (Pandas, NumPy, Scikit-learn), PySpark and Spark MLlib on Databricks' },
+    { group: 'Analysis & modelling', items: 'Data reconciliation and validation, root-cause and variance analysis, cohort analysis, A/B comparison, forecasting (SARIMA, baselines), anomaly detection (Isolation Forest, robust z-scores), text classification (TF-IDF), clustering (KMeans), logistic regression, XGBoost, recommender systems (ALS, item-kNN), model evaluation (AUC, F1, precision and recall, NDCG and MAP)' },
     { group: 'BI & reporting', items: 'Power BI (DAX), Tableau, Looker, Metabase, KPI dashboards, Excel (Power Query, pivot tables, XLOOKUP, VBA), Google Sheets, PowerPoint, ETL automation' },
     { group: 'Business analysis', items: 'Requirements gathering, Jira ticketing, user acceptance testing (UAT), stakeholder management, leadership reporting' },
     { group: 'Ad tech', items: 'RTB, header bidding (Prebid), PMP deals, OpenRTB 2.5/2.6, VAST/VPAID, ads.txt and schain, IVT and brand safety, yield optimisation; Xandr Invest and Beeswax (hands-on), Amazon DSP (certified), Magnite, PubMatic, Xandr Monetize, Cedato' },
     { group: 'Tools & AI', items: 'Git, GitHub, Jira, AWS, DB Gate, Google Apps Script, Jenkins, Notion; Claude (via MCP), Claude Code, ChatGPT — with output validation' },
-    { group: 'Currently learning', items: 'Databricks, PySpark, Delta Lake' },
+    { group: 'Currently learning', items: 'Delta Lake' },
   ],
 
   certifications: [

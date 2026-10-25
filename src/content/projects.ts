@@ -142,6 +142,38 @@ const list: Omit<Project, 'num'>[] = [
     coverPlaceholder: 'Campus Crave app screens',
   },
   {
+    id: 'movie-recs',
+    status: 'shipped',
+    title: 'Movie Recommender',
+    kind: 'Recommender · Spark at scale',
+    hobby: 'Movies',
+    cats: ['Big data', 'ML'],
+    tags: ['PySpark', 'Spark MLlib', 'Databricks', 'Delta tables', 'NumPy'],
+    summary:
+      'A Spark recommender judged on what you actually watch next — built on 100K ratings, then scaled to 25M on Databricks.',
+    question:
+      'Do collaborative-filtering recommendations beat “just show what’s popular” at ranking what a user watches next — and does the answer hold at 25 million ratings?',
+    steps: [
+      'Loaded MovieLens into Delta tables on Databricks and profiled it in PySpark: at 25M ratings from 162K users the matrix is 99.74% empty, and the top 10% of movies hold 94% of all ratings.',
+      'Split every user’s history by time: the last 5 ratings are the test, the 5 before them tune the models, so no model ever sees a user’s future.',
+      'Baselines first — the most popular movies, popularity weighted by the user’s favourite genres, and item-kNN — then Spark MLlib ALS in two forms: explicit, tuned on rating error, and implicit, tuned on ranking.',
+      'Scored every model on NDCG, MAP, precision and recall at 10, plus catalogue coverage and popularity bias. Built the top-10 lists from the ALS factors in NumPy, because Spark’s built-in method is blocked on serverless.',
+      'Ran the same notebooks on 100K and then 25M ratings: implicit ALS’s lead over popularity grew from 59% to 94%, and its validation score now matches test (0.072 vs 0.074).',
+      'The best rating predictor was the worst recommender: explicit ALS had the lowest error (RMSE 0.887) but an NDCG@10 of 0.000, because its top 10 were obscure movies from the long tail.',
+    ],
+    results: [
+      ['+94%', 'NDCG@10 over a popularity list on 25M ratings (+59% on 100K)'],
+      ['25M', 'ratings from 162K users, on Databricks Free Edition'],
+      ['8.3×', 'training time for 100× more data (41 s → 339 s)'],
+    ],
+    links: [
+      { label: 'GitHub repo', href: 'https://github.com/chayanjn24/movie-recommender' },
+      { label: 'Notebooks with results', href: 'https://chayanjn24.github.io/movie-recommender/' },
+    ],
+    cover: '/images/projects/movie-recs.png',
+    coverPlaceholder: 'Movie Recommender results',
+  },
+  {
     id: 'recon-lakehouse',
     status: 'next',
     when: 'Nov 2026',
@@ -267,24 +299,6 @@ const list: Omit<Project, 'num'>[] = [
       'Audio clusters + Streamlit similarity app.',
     ],
     done: 'Streamlit app deployed.',
-  },
-  {
-    id: 'movie-recs',
-    status: 'queued',
-    when: 'Dec 2026',
-    title: 'Next Movie Engine',
-    kind: 'Recommender',
-    hobby: 'Movies',
-    cats: ['Big data', 'ML'],
-    tags: ['PySpark', 'ALS', 'Databricks'],
-    summary: 'A Spark recommender judged on what you actually watch next, not on RMSE.',
-    question: 'Do collaborative-filtering recommendations beat popularity at ranking what a user watches next?',
-    steps: [
-      'Temporal per-user holdout on MovieLens.',
-      'ALS vs popularity and item-kNN baselines.',
-      'NDCG, MAP, coverage and popularity bias.',
-    ],
-    done: 'Ranking metrics reported.',
   },
   {
     id: 'ipl-wp',
