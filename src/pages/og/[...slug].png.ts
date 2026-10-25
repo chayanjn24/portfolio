@@ -16,10 +16,10 @@ type Content = Omit<Card, 'domain' | 'firstName' | 'lastName'>;
 
 export const getStaticPaths = (() => {
   const pages: [string, Content][] = [
-    ['index', { label: '(00) Portfolio — Data & business analyst', title: hero.headline.join(' '), sub: hero.bio }],
+    ['index', { label: '(00) Portfolio · Data & business analyst', title: hero.headline.join(' '), sub: hero.bio }],
     ['work', { label: fill(workPage.label), title: 'Work*.*', sub: plain(workPage.lead) }],
-    ['about', { label: '(03) About — Guwahati ⇄ Pune', title: intro.headline.join(' '), sub: plain(intro.lead) }],
-    ['resume', { label: '(04) Résumé — Data & business analyst', title: 'Résumé*.*', sub: '$2.6M+ revenue portfolio · 32% YoY growth · SQL, Python, Power BI, Tableau' }],
+    ['about', { label: '(03) About · Guwahati ⇄ Pune', title: intro.headline.join(' '), sub: plain(intro.lead) }],
+    ['resume', { label: '(04) Résumé · Data & business analyst', title: 'Résumé*.*', sub: '$2.6M+ revenue portfolio · 32% YoY growth · SQL, Python, Power BI, Tableau' }],
     ['contact', { label: '(05) Contact', title: contact.headline.join(' '), sub: plain(contact.lead) }],
     ...projects.map((p): [string, Content] => [
       `work/${p.id}`,

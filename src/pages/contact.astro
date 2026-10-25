@@ -77,13 +77,13 @@ const { form } = contact;
     timer = window.setTimeout(() => (copyLabel.textContent = 'Copy'), 1600);
   });
 
-  // Form → mailto: link with subject "<topic> — from <name>".
+  // Form → mailto: link with subject "<topic> (from <name>)".
   const formEl = document.querySelector<HTMLFormElement>('[data-mail-form]');
   formEl?.addEventListener('submit', (e) => {
     e.preventDefault();
     const data = new FormData(formEl);
     const name = String(data.get('name') || '').trim() || 'your portfolio';
-    const subject = `${data.get('topic')} — from ${name}`;
+    const subject = `${data.get('topic')} (from ${name})`;
     const body = String(data.get('message') || '');
     window.location.href = `mailto:${formEl.dataset.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   });

@@ -2,7 +2,7 @@
  * CONTACT PAGE copy. Email and links come from site.ts.
  */
 export const contact = {
-  label: '(05) Contact — Player 2, press start',
+  label: '(05) Contact · Player 2, press start',
   /** One entry per line. Supports *emphasis*. */
   headline: ['Say', '*hi.*'],
   /** Supports *emphasis*. */
@@ -13,7 +13,7 @@ export const contact = {
     title: 'Send a message',
     note: 'Opens your mail app',
     topicLabel: 'This is about',
-    /** The first topic is selected by default. The email subject is "<topic> — from <name>". */
+    /** The first topic is selected by default. The email subject is "<topic> (from <name>)". */
     topics: ['A role', 'A project', 'Freelance', 'Just saying hi'],
     nameLabel: 'Your name',
     namePlaceholder: 'Ada Lovelace',

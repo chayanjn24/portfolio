@@ -1,36 +1,35 @@
 /**
- * RÉSUMÉ PAGE — the full, long-form version of your résumé.
+ * RÉSUMÉ PAGE: the full, long-form version of your résumé.
  *
  * Every number here is from the verified table in
  * Resumes & Job Search/3 LaTeX Projects/project_context/01_CONTENT_BANK.md (Part 0.3).
  * Don't change a number without updating the content bank too.
  *
  * Contact details (email, phone, links) come from site.ts.
- * The downloadable one-page PDF is set in site.ts → resumePdf.
+ * The downloadable one-page PDF is set in site.ts → resumePdf (a copy of the LaTeX master_analyst).
  *
  * In bullets, *asterisks* brighten the key phrase (like the bold spans on the PDF).
  * Section order on the page is fixed; letters (A), (B)… are automatic and skip empty sections.
  *
- * AFTER 28 OCT 2026: change AdElement's `when` to 'Jul 2025 — Oct 2026' and switch its
- * present-tense bullets (Manage, Diagnose, Keep, Present, Translate) to past tense.
- * Also update the matching line in about.ts → path.
+ * Voice (v3, 25 Oct 2026, content bank 0.6): plain words, no long dashes, no "I".
+ * AdElement is past tense (Jul 2025 – Oct 2026), matching the PDFs.
  */
 import type { Certification, Job, LeadershipRole, ResumeProject, Stat } from './types';
 
 export const resume = {
-  label: '(04) Résumé — data & business analyst',
+  label: '(04) Résumé · data & business analyst',
   location: 'Pune, India',
   openTo: 'Open to roles in Pune, Bengaluru, Hyderabad and Gurgaon',
 
   /** Supports *emphasis*. */
   profile:
-    'Data and business analyst who makes the numbers hold up. Manages a *$2.6M+ annual revenue portfolio*, ran company-wide billing for 55+ revenue lines, and reconciles internal and partner data in SQL and Python until it ties out. Traces errors to their root cause, writes tickets engineers can build from, tests fixes before they go live, and automates the reporting nobody should do by hand. Uses GenAI to move faster — and *checks every output against source.*',
+    'Data and business analyst with hands-on work in revenue reporting, billing and reconciliation. Grew a *$2.6M+ annual revenue portfolio*, ran company-wide billing for 55+ revenue lines, and reconciled internal and partner data in SQL and Python until it tied out. Finds out why two numbers don’t match, fixes the cause, and automates the report so it stays right. Uses AI tools to move faster and *checks every output against source.*',
 
   /** "At a glance" strip. The first value is orange. */
   highlights: [
     { value: '$2.6M+', label: 'annual revenue portfolio across 15 partner accounts' },
     { value: '32%', label: 'year-on-year portfolio revenue growth' },
-    { value: '3–4', label: 'days to close the books each month — down from 14' },
+    { value: '3–4', label: 'days to close the books each month, down from 14' },
     { value: '100K+', label: 'records reconciled every month in SQL' },
     { value: '7–8h', label: 'analyst hours saved every week by automation' },
     { value: '2–3h', label: 'saved every day with Claude on internal data' },
@@ -41,52 +40,52 @@ export const resume = {
       org: 'AdElement Media',
       role: 'Data Analyst',
       location: 'Pune, Maharashtra',
-      when: 'Jul 2025 — Present',
+      when: 'Jul 2025 – Oct 2026',
       context:
-        'Programmatic advertising company with its own ad server. Owns partner revenue data end to end — accounts, billing, reconciliation and the reporting leadership reads.',
+        'Programmatic advertising company with its own ad server. Owned partner revenue data end to end: accounts, billing, reconciliation and the reports leadership read.',
       groups: [
         {
           title: 'Revenue & accounts',
           points: [
-            'Manage a *$2.6M+ annual revenue portfolio* of 15 demand-partner accounts — Magnite, PubMatic, Nexxen/Unruly, Xandr, FreeWheel and others — growing portfolio revenue *32% year on year*.',
-            'Scaled two newly launched accounts, Magnite and PubMatic, *about 10x* through data-led optimisation.',
-            'Onboarded *7+ new demand integrations*, and curated request filtering for Xandr, Magnite and PubMatic so each received the request types it bids on — lifting *ad requests 20%*.',
+            'Grew a *$2.6M+ annual revenue portfolio* of 15 demand-partner accounts (Magnite, PubMatic, Nexxen/Unruly, Xandr, FreeWheel and others) by *32% year on year*.',
+            'Scaled two newly launched accounts, Magnite and PubMatic, *about 10x*.',
+            'Onboarded *7+ new demand integrations*, and curated request filtering for Xandr, Magnite and PubMatic so each received the request types it bids on, lifting *ad requests 20%*.',
           ],
         },
         {
           title: 'Billing & reconciliation',
           points: [
-            'Owned *company-wide monthly billing* for 55+ partner revenue lines across 10+ business entities: invoice verification, actualisation, revenue-share and shared-seat splits, IVT chargebacks and partner deductions.',
+            'Ran *company-wide monthly billing* for 55+ partner revenue lines across 10+ business entities: invoice checks, actualisation, revenue-share and shared-seat splits, IVT chargebacks and partner deductions.',
             'Cut the month-end close from *14 days to 3–4*, reconciliation for invoicing included.',
-            'Reconciled *100K+ records every month* between internal and partner data in SQL (Redshift, AWS Athena, MySQL), aligning EST and UTC reporting days and flagging every variance above 5%.',
-            'Caught a *systematic error in revenue-variance logic* — a reversed formula, capped at ±100%, that misreported changes for all 70+ demand partners. Found it unprompted, fixed it, and ran user acceptance testing against source data; the data team head confirmed the fix.',
+            'Reconciled *100K+ records every month* between internal and partner data in SQL (Redshift, AWS Athena, MySQL), fixing time-zone mismatches and flagging every gap above 5%.',
+            'Found a *bug in the revenue-change formula* that misreported changes for all 70+ demand partners. Spotted it unprompted, fixed it, and ran user acceptance testing against source data; the data team head confirmed the fix.',
           ],
         },
         {
           title: 'Data, automation & AI',
           points: [
             'Automated *daily performance and account-health reports* for 10+ accounts (SQL → Python → Excel Power Query and VBA), replacing manual reporting and saving *7–8 hours a week*.',
-            'Built *3 Metabase dashboards* on a 10-minute refresh — demand and supply health, per-account revenue, ads.txt and bundle validation — used daily by the team.',
-            'Cut key SQL query run time from *10–15 minutes to 3–4* by filtering early instead of scanning full tables, on TB-scale daily ad-request logs in AWS Athena and Redshift.',
-            'Connected *Claude to internal databases via MCP* (read-only, company-approved) and curated a knowledge base of data sources and learnings that keeps it improving — saving *2–3 hours a day* on extraction and checks, with every output validated.',
+            'Built *3 Metabase dashboards* on a 10-minute refresh for demand and supply health, per-account revenue, and ads.txt and bundle checks, used daily by the team.',
+            'Cut a key SQL query from *10–15 minutes to 3–4* by filtering early instead of scanning full tables, on TB-scale daily ad-request logs in AWS Athena and Redshift.',
+            'Connected *Claude to internal databases through MCP* (read-only, company-approved) and kept a knowledge base of data sources and lessons that helps it improve, saving *2–3 hours a day* on pulling and checking data, with every output verified.',
           ],
         },
         {
           title: 'Stakeholders & delivery',
           points: [
-            'Present monthly revenue reports to the *CEO, COO and founder*, as well as parent-company executives, and turn around *3+ ad-hoc analysis requests a week* within 2–3 hours.',
-            'Translate requirements from leadership, partners and clients into Jira tickets for data engineering — *about 5 a day*, raised and resolved — on reporting logic and data fixes.',
-            'Supported a platform transition by maintaining the daily side-by-side comparison of two in-house ad servers on identical traffic (IVT, fill rate, CPM).',
+            'Presented monthly revenue reports to the *CEO, COO and founder* and parent-company executives, and turned around *3+ ad-hoc analysis requests a week* within 2–3 hours.',
+            'Turned requirements from leadership, partners and clients into Jira tickets for data engineering, *about 5 a day*, on reporting logic and data fixes.',
+            'Supported a platform transition by keeping a daily side-by-side comparison of two in-house ad servers on identical traffic (IVT, fill rate, CPM).',
           ],
         },
         {
           title: 'Ad tech, yield & quality',
           points: [
-            'Compared two versions of the same supply side by side and tested floor prices, lifting *eCPM from $0.50 to $0.70* on tested supply and holding revenue per million requests above $2 when demand was thin.',
-            'Diagnose *zero-bid and zero-delivery issues* by diffing OpenRTB bid requests — bidfloor, mimes, tmax, duration, schain, app and publisher IDs — and fixing VAST macro mapping with partner tech teams.',
-            'Measured how *Extended IDs* affect bids and revenue, prioritised supply by OS and supply type, and built partner-level QPS action plans; QPS throttling cut wasted requests *about 15%*.',
-            'Keep bundle-level *invalid traffic under a 2.5% ceiling* with IVT filtering, brand-safety rules, bundle allowlists, and ads.txt, app-ads.txt and schain validation in SQL.',
-            'Set up and troubleshoot *PMP and preferred deals* through SSP partners for DV360 and The Trade Desk buyers, resolving deal ID, floor, targeting and seat mismatches.',
+            'Compared two versions of the same supply side by side and tested floor prices, lifting *eCPM from $0.50 to $0.70* on tested supply and keeping revenue per million requests above $2 when demand was thin.',
+            'Fixed *zero-bid and zero-delivery issues* by comparing OpenRTB bid requests field by field (bidfloor, mimes, tmax, duration, schain, app and publisher IDs) and correcting VAST macro mapping with partner tech teams.',
+            'Measured how *Extended IDs* affect bids and revenue, ranked supply by OS and supply type, and built partner-level QPS action plans; QPS throttling cut wasted requests *about 15%*.',
+            'Kept bundle-level *invalid traffic under the SSPs’ 2.5% ceiling* with IVT filtering, brand-safety rules, bundle allowlists, and ads.txt, app-ads.txt and schain checks in SQL.',
+            'Set up and fixed *PMP and preferred deals* through SSP partners for DV360 and The Trade Desk buyers, resolving deal ID, floor, targeting and seat mismatches.',
           ],
         },
       ],
@@ -95,14 +94,14 @@ export const resume = {
       org: 'Datawrkz',
       role: 'Ad Operations Analyst Intern',
       location: 'Bengaluru, Karnataka',
-      when: 'Mar — Jun 2025',
-      context: 'Programmatic agency — the buy side: running and reporting display campaigns on DSPs.',
+      when: 'Mar – Jun 2025',
+      context: 'Programmatic agency on the buy side: running and reporting display campaigns on DSPs.',
       groups: [
         {
           points: [
-            'Ran 8 programmatic display campaigns (*£160K budget*) on Xandr Invest and Beeswax for 8+ real-estate clients — setup, trafficking, creative QA, targeting and bidding.',
-            'Kept budget pacing within *95–105% of plan* by adjusting CPM bids, tracked through daily pacing reports built in advanced Excel from platform APIs and UIs.',
-            'Built full-funnel audience strategies for property launches — geo, HNWI, real-estate intenders, retirement investors — and lifted *conversions 15–23%* (sign-ups, booked calls) through segmentation and A/B testing.',
+            'Ran 8 programmatic display campaigns (*£160K budget*) on Xandr Invest and Beeswax for 8+ real-estate clients: setup, trafficking, creative QA, targeting and bidding.',
+            'Kept budget pacing within *95–105% of plan* by adjusting CPM bids, tracked in daily pacing reports built in Excel from platform APIs and UIs.',
+            'Built full-funnel audience strategies for property launches (geo, HNWI, real-estate intenders, retirement investors) and lifted *conversions 15–23%* (sign-ups, booked calls) through segmentation and A/B testing.',
             'Automated recurring campaign reporting through APIs and Looker, cutting turnaround *35%*.',
           ],
         },
@@ -115,13 +114,13 @@ export const resume = {
       org: 'NIT Silchar',
       role: 'Machine Learning Research Project',
       location: 'Silchar, Assam',
-      when: 'Jun — Aug 2024',
+      when: 'Jun – Aug 2024',
       context: 'Team project under Prof. Prashant J (Satyendra Nath Bose research programme).',
       groups: [
         {
           points: [
             'Predicted concrete compressive strength from mix composition on *1,000+ lab samples* using regression in Python (Pandas, NumPy, Scikit-learn), reaching *R² 0.734* and an MAE of 7.53 MPa.',
-            'Handled outlier detection and feature engineering; the findings pointed to more cost-effective material choices.',
+            'Handled outlier detection and feature engineering; the findings pointed to cheaper material choices.',
           ],
         },
       ],
@@ -140,9 +139,9 @@ export const resume = {
         { label: 'GitHub', href: 'https://github.com/chayanjn24/tallyline' },
       ],
       points: [
-        'Built an *analytics workspace for a programmatic ad exchange* on synthetic data: live KPIs, a full bid funnel, six drill-down levels, comparisons and printable reports.',
-        'Wrote the anomaly detector in SQL — robust z-scores against the same hour of the week, then gaps-and-islands to merge incidents — catching *100% of planted incidents* across three seeds at 94–100% precision.',
-        'Modelled the data as a DuckDB star schema with rollups (typical 31-day query: 5–30 ms), served by a read-only FastAPI; 31 tests check that every breakdown reconciles to the total.',
+        'Built an *analytics workspace for a simulated ad exchange*: live KPIs, a full bid funnel, six drill-down levels, comparisons and printable reports.',
+        'Wrote the anomaly detector in SQL (robust z-scores against the same hour in past weeks, then gaps-and-islands to merge hours into incidents). It caught *100% of planted incidents* across three seeds at 94–100% precision.',
+        'Modelled the data as a DuckDB star schema with rollups (typical 31-day query: 5–30 ms), served by a read-only FastAPI; 31 tests check that every breakdown adds back up to the total.',
       ],
     },
     {
@@ -155,8 +154,8 @@ export const resume = {
         { label: 'Tableau Public', href: 'https://public.tableau.com/app/profile/chayan.gulgulia/vizzes' },
       ],
       points: [
-        'Cleaned and analysed *150K+ loan records* in Snowflake SQL (CTEs, window functions, cohort analysis): revolving utilisation plus prior delinquency drove a *48% default rate*, against 3% for low-risk borrowers.',
-        'Benchmarked logistic regression and XGBoost (test AUC 0.86 / 0.87) and turned the scores into a lending policy — declining the riskiest 20% catches *73% of defaulters*.',
+        'Analysed *150K+ loan records* in Snowflake SQL (CTEs, window functions, cohort analysis): borrowers with high card utilisation and past late payments defaulted at *48%*, against 3% for low-risk borrowers.',
+        'Compared logistic regression and XGBoost (test AUC 0.86 and 0.87) and turned the scores into a lending rule: declining the riskiest 20% catches *73% of defaulters*.',
         'Published two cross-filtered Tableau Public dashboards and a business case study written for non-technical readers.',
       ],
     },
@@ -167,9 +166,9 @@ export const resume = {
       when: '2026',
       links: [{ label: 'Notebook', href: 'https://colab.research.google.com/drive/1bC1_w7qK4CpFu_IVKJXIYP90GaAki7WS?usp=sharing' }],
       points: [
-        'Built a Colab notebook on *815 of my own transactions* (sanitized for the shareable demo): savings rate, budget vs. actual, subscriptions, unusual-payment alerts and a month-end forecast.',
-        'Benchmarked ML against the rules on an unseen month: a *TF-IDF + logistic regression categorizer* got 59% right vs 45% (macro F1 0.49 vs 0.39), and a *weekly SARIMA* cut month-end forecast error to 8% from 15% by day 20.',
-        'Compared Isolation Forest anomaly scores with the rule-based alerts (agreeing on 3 of 8, surfacing 5 more), and reported KMeans merchant groups as too weak to use (silhouette 0.26).',
+        'Built a Colab notebook on *815 real personal transactions* (sanitized for the shareable demo): savings rate, budget vs. actual, subscriptions, unusual-payment alerts and a month-end forecast.',
+        'Tested ML against the rules on an unseen month: a *TF-IDF + logistic regression categorizer* got 59% right vs 45% (macro F1 0.49 vs 0.39), and a *weekly SARIMA* cut month-end forecast error to 8% from 15% by day 20.',
+        'Checked Isolation Forest against the rule-based alerts (agreed on 3 of 8, surfaced 5 more) and reported KMeans merchant groups as too weak to use (silhouette 0.26).',
       ],
     },
     {
@@ -183,8 +182,8 @@ export const resume = {
       ],
       points: [
         'Built a *Spark ALS recommender* on Databricks and scaled it from 100K to *25M MovieLens ratings* (162K users), tested on a time-based split of what each user watched next.',
-        'Implicit ALS beat a popularity baseline by *94% on NDCG@10* at 25M (59% at 100K), while the model with the best rating error (RMSE 0.887) ranked worst — evidence for judging recommenders on ranking.',
-        'Measured scaling on serverless compute: *100× more data took 8.3× longer* to train (41 s → 339 s); built top-10 lists from the ALS factors in NumPy where Spark’s built-in method was blocked.',
+        'Implicit ALS beat a popularity baseline by *94% on NDCG@10* at 25M (59% at 100K). The model with the best rating error (RMSE 0.887) ranked worst, so recommenders should be judged on ranking.',
+        'Measured scaling on serverless compute: *100× more data took 8.3× longer* to train (41 s to 339 s). Built top-10 lists from the ALS factors in NumPy where Spark’s built-in method was blocked.',
       ],
     },
     {
@@ -193,7 +192,7 @@ export const resume = {
       when: '2024',
       links: [{ label: 'GitHub', href: 'https://github.com/chayanjn24/Student-Analysis-Dashboard' }],
       points: [
-        'Cleaned and transformed *150K+ raw institutional records* through SQL and ETL into a Power BI reporting suite with DAX measures, helping administrators spot at-risk students early.',
+        'Cleaned and transformed *150K+ raw institutional records* with SQL and ETL into a Power BI reporting suite (DAX), helping administrators spot at-risk students early.',
       ],
     },
     {
@@ -206,19 +205,19 @@ export const resume = {
         { label: 'GitHub', href: 'https://github.com/chayanjn24/campus_crave' },
       ],
       points: [
-        'Built a *campus food delivery app* for NIT Silchar where students order from hostel canteens and other students deliver for a fee paid into an in-app wallet.',
-        'Designed role-based flows for students, runners and vendors, with live order tracking and unit tests on the order rules, fees and wallet.',
+        'Built a *campus food delivery app* for NIT Silchar: students order from hostel canteens, and other students deliver for ₹15 paid into an in-app wallet.',
+        'Designed separate flows for students, runners and vendors, with live order tracking and 11 unit tests on the order rules, fees and wallet.',
       ],
     },
   ] satisfies ResumeProject[],
 
   skills: [
-    { group: 'SQL & Python', items: 'SQL (joins, CTEs, window functions, query optimisation — MySQL, Redshift, AWS Athena, Snowflake), Python (Pandas, NumPy, Scikit-learn), PySpark and Spark MLlib on Databricks' },
-    { group: 'Analysis & modelling', items: 'Data reconciliation and validation, root-cause and variance analysis, cohort analysis, A/B comparison, forecasting (SARIMA, baselines), anomaly detection (Isolation Forest, robust z-scores), text classification (TF-IDF), clustering (KMeans), logistic regression, XGBoost, recommender systems (ALS, item-kNN), model evaluation (AUC, F1, precision and recall, NDCG and MAP)' },
+    { group: 'SQL & Python', items: 'SQL (joins, CTEs, window functions, query optimisation; MySQL, Redshift, AWS Athena, Snowflake, DuckDB), Python (Pandas, NumPy, Scikit-learn), PySpark and Spark MLlib on Databricks' },
+    { group: 'Analysis & modelling', items: 'Data quality, reconciliation and validation, root-cause and variance analysis, cohort analysis, KPI monitoring, A/B comparison, forecasting (SARIMA, baselines), anomaly detection (Isolation Forest, robust z-scores), text classification (TF-IDF), clustering (KMeans), logistic regression, XGBoost, recommender systems (ALS, item-kNN), model evaluation (AUC, F1, precision and recall, NDCG and MAP)' },
     { group: 'BI & reporting', items: 'Power BI (DAX), Tableau, Looker, Metabase, KPI dashboards, Excel (Power Query, pivot tables, XLOOKUP, VBA), Google Sheets, PowerPoint, ETL automation' },
-    { group: 'Business analysis', items: 'Requirements gathering, Jira ticketing, user acceptance testing (UAT), stakeholder management, leadership reporting' },
+    { group: 'Business analysis', items: 'Requirements gathering, Jira ticketing, user acceptance testing (UAT), stakeholder management, cross-functional communication, executive presentations' },
     { group: 'Ad tech', items: 'RTB, header bidding (Prebid), PMP deals, OpenRTB 2.5/2.6, VAST/VPAID, ads.txt and schain, IVT and brand safety, yield optimisation; Xandr Invest and Beeswax (hands-on), Amazon DSP (certified), Magnite, PubMatic, Xandr Monetize, Cedato' },
-    { group: 'Tools & AI', items: 'Git, GitHub, Jira, AWS, DB Gate, Google Apps Script, Jenkins, Notion; Claude (via MCP), Claude Code, ChatGPT — with output validation' },
+    { group: 'Tools & AI', items: 'Git, GitHub, Jira, AWS, DB Gate, Google Apps Script, Jenkins, Notion; Claude (via MCP), Claude Code, ChatGPT, with every output checked' },
     { group: 'Currently learning', items: 'Delta Lake' },
   ],
 
@@ -233,21 +232,21 @@ export const resume = {
   ] satisfies Certification[],
 
   leadership: [
-    { role: 'General Secretary', org: 'NITSMUN, NIT Silchar', when: '2024 — 2025', description: 'Led 8+ Model UN conferences and mock sessions, grew participation 70%, and secured ₹30,000 in sponsorships.' },
-    { role: 'Executive Head', org: 'E-Cell, NIT Silchar', when: '2023 — 2024', description: 'Ran 10 workshops and 5 mentorship programmes for a campus of 8,000+ students, and negotiated ₹1,00,000 in sponsorships.' },
-    { role: 'Core Team Member', org: 'Aaveg, the dance club of NIT Silchar', when: '2023 — 2024', description: 'Helped run 3 inter-college competitions reaching 5,000+ students, and brought in a ₹20,000 sponsorship.' },
-    { role: 'Core Content Writer & Organiser', org: 'Incandescence 2023 · Tecnoesis 2022', when: '2022 — 2023', description: 'Wrote promotional content for two of the college’s flagship festivals, with 3,000+ participants.' },
+    { role: 'General Secretary', org: 'NITSMUN, NIT Silchar', when: '2024 – 2025', description: 'Led 8+ Model UN conferences and mock sessions, grew participation 70%, and secured ₹30,000 in sponsorships.' },
+    { role: 'Executive Head', org: 'E-Cell, NIT Silchar', when: '2023 – 2024', description: 'Ran 10 workshops and 5 mentorship programmes for a campus of 8,000+ students, and negotiated ₹1,00,000 in sponsorships.' },
+    { role: 'Core Team Member', org: 'Aaveg, the dance club of NIT Silchar', when: '2023 – 2024', description: 'Helped run 3 inter-college competitions reaching 5,000+ students, and brought in a ₹20,000 sponsorship.' },
+    { role: 'Core Content Writer & Organiser', org: 'Incandescence 2023 · Tecnoesis 2022', when: '2022 – 2023', description: 'Wrote promotional content for two of the college’s flagship festivals, with 3,000+ participants.' },
   ] satisfies LeadershipRole[],
 
   education: {
     school: 'National Institute of Technology, Silchar',
     degree: 'B.Tech, Civil Engineering · CGPA 8.24',
     location: 'Silchar, Assam',
-    when: '2021 — 2025',
+    when: '2021 – 2025',
   },
 
   extras: [
     { label: 'Languages', value: 'English, Hindi (full professional)' },
-    { label: 'Problem solving', value: 'LeetCode — 300+ problems solved, 50-day streak badge' },
+    { label: 'Problem solving', value: 'LeetCode: 300+ problems solved, 50-day streak badge' },
   ],
 };

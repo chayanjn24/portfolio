@@ -31,7 +31,7 @@ export interface Project {
   summary: string;
   /** "(A) The question" on the project page. */
   question: string;
-  /** "What I did" (shipped) or "The plan" (not shipped). */
+  /** "How it was built" (shipped) or "The plan" (not shipped). */
   steps: string[];
   /** Shipped only — big stats: [value, label]. The first one is orange. */
   results?: [string, string][];

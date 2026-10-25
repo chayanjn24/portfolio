@@ -12,11 +12,11 @@ import RevealLines from '@components/RevealLines.astro';
   data-last={site.lastName}
 >
   <canvas aria-hidden="true"></canvas>
-  <h1 class="sr-only">{site.fullName} — {site.role}</h1>
+  <h1 class="sr-only">{site.fullName}, {site.role}</h1>
   <div class="overlay">
     <div class="meta label">
       {hero.meta.map((m) => <span>{m}</span>)}
-      <span class="fig">fig. <span data-fig-n>01</span> — <span class="accent" data-fig-label>{hero.shapeLabels[0]}</span></span>
+      <span class="fig">fig. <span data-fig-n>01</span> · <span class="accent" data-fig-label>{hero.shapeLabels[0]}</span></span>
     </div>
     <div class="bottom">
       <p class="headline serif">

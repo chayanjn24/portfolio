@@ -24,7 +24,7 @@ const { job } = Astro.props;
         <ul class="points">
           {g.points.map((pt) => (
             <li>
-              <span class="dash">—</span>
+              <span class="dash">•</span>
               <span set:html={rich(pt)} />
             </li>
           ))}

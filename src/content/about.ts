@@ -4,18 +4,18 @@
 import type { Hobby, Milestone } from './types';
 
 export const intro = {
-  label: '(03) About — Guwahati ⇄ Pune',
+  label: '(03) About · Guwahati ⇄ Pune',
   /** One entry per line. Supports *emphasis* (the last line is orange italic by design). */
-  headline: ['Load, stress', '& tolerance —', '*data has all three.*'],
+  headline: ['Load, stress', '& tolerance:', '*data has all three.*'],
   portrait: '/images/portrait.jpg',
   portraitPlaceholder: 'Portrait of you',
   /** Supports *emphasis*. */
-  lead: 'I’m Chayan — a data and business analyst who likes questions with *money on the line.*',
-  body: 'Numbers that have to tie out, dashboards people actually open. Off the clock I’m behind a camera, on a trail, on a dance floor, or building something I didn’t need at 2 a.m. English and Hindi.',
+  lead: 'Chayan Gulgulia. Data and business analyst who likes questions with *money on the line.*',
+  body: 'Best at numbers that have to tie out and dashboards people actually open. Off the clock: behind a camera, on a trail, on a dance floor, or building something nobody asked for at 2 a.m. Speaks English and Hindi.',
 };
 
 export const hobbiesSection = {
-  label: '(A) Off the clock — {hobbies} sides',
+  label: '(A) Off the clock · {hobbies} sides',
   title: 'The *other* dataset',
   hint: 'Hover or tap to open',
 };
@@ -47,9 +47,9 @@ export const pathSection = {
 
 /** Timeline, oldest first. */
 export const path: Milestone[] = [
-  { when: '2021 — 2025', org: 'NIT Silchar', role: 'B.Tech, Civil Engineering', description: 'CGPA 8.24. Learned structures, then learned that spreadsheets have them too.' },
-  { when: 'Mar — Jun 2025', org: 'Datawrkz', role: 'Ad operations analyst intern, Bengaluru', description: '8 display campaigns on a £160K budget, pacing held at 95–105%, conversions +15–23% via segmentation and A/B tests, reporting turnaround −35% via API and Looker automation.' },
-  { when: 'Jul 2025 — Present', org: 'AdElement Media', role: 'Data analyst, Pune', description: '$2.6M+ annual revenue portfolio, +32% YoY. Month-end close cut from 14 days to 3–4; 100K+ records reconciled monthly in SQL. Monthly reports to the CEO, COO and founder.' },
+  { when: '2021 – 2025', org: 'NIT Silchar', role: 'B.Tech, Civil Engineering', description: 'CGPA 8.24. Learned structures, then learned that spreadsheets have them too.' },
+  { when: 'Mar – Jun 2025', org: 'Datawrkz', role: 'Ad operations analyst intern, Bengaluru', description: '8 display campaigns on a £160K budget with pacing held at 95–105%. Lifted conversions 15–23% through segmentation and A/B tests, and cut reporting turnaround 35% with API and Looker automation.' },
+  { when: 'Jul 2025 – Oct 2026', org: 'AdElement Media', role: 'Data analyst, Pune', description: 'Grew a $2.6M+ annual revenue portfolio 32% YoY. Cut the month-end close from 14 days to 3–4 and reconciled 100K+ records a month in SQL. Presented monthly reports to the CEO, COO and founder.' },
 ];
 
 /** The last row of the timeline, linking to Contact. */

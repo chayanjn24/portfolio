@@ -19,7 +19,7 @@ interface Props {
 }
 
 const { title, description = site.description, footerCta = true } = Astro.props;
-const fullTitle = title ? `${title} — ${site.fullName}` : `${site.fullName} — ${site.role}`;
+const fullTitle = title ? `${title} · ${site.fullName}` : `${site.fullName} · ${site.role}`;
 const siteUrl = Astro.site ?? new URL(Astro.url.origin);
 const canonical = new URL(Astro.url.pathname, siteUrl).href;
 // Link-preview card made for this page at build time (src/pages/og/[...slug].png.ts).

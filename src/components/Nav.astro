@@ -139,7 +139,7 @@ const clock = `<span data-clock data-tz="${site.clock.timeZone}">--:--</span> ${
       try {
         const d = await (await fetch('/api/now-playing')).json();
         if (!d.configured || !d.title) return;
-        const song = `${d.title} — ${d.artist}`;
+        const song = `${d.title} · ${d.artist}`;
         np.href = d.url;
         np.title = `${d.playing ? 'Now playing' : 'Last played'} on Spotify: ${song}`;
         np.classList.toggle('is-playing', d.playing);

@@ -7,14 +7,14 @@ import type { NavLink } from './types';
 export const site = {
   firstName: 'Chayan',
   lastName: 'Gulgulia',
-  /** Used in browser tab titles: "<page> — Chayan Gulgulia". */
+  /** Used in browser tab titles: "<page> · Chayan Gulgulia". */
   get fullName() {
     return `${this.firstName} ${this.lastName}`;
   },
   role: 'Data & business analyst',
   /** Default description for search engines and link previews. */
   description:
-    'Chayan Gulgulia — data & business analyst. SQL, Python, BI and ML, with a soft spot for fintech.',
+    'Chayan Gulgulia, data and business analyst in Pune. SQL, Python, BI and machine learning, with a soft spot for fintech.',
 
   email: 'chayangulgulia@gmail.com',
   /** Leave empty ('') to hide the phone number everywhere. */
@@ -48,6 +48,6 @@ export const nav: NavLink[] = [
 export const footer = {
   label: '(→) Next step',
   /** One entry per line. Supports *emphasis*. */
-  headline: ['Let’s make the', '*numbers talk.*'],
+  headline: ['Got numbers that', '*won’t add up?*'],
   cta: 'Get in touch ↗',
 };

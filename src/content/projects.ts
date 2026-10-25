@@ -19,9 +19,9 @@ const list: Omit<Project, 'num'>[] = [
     cats: ['BI', 'Analytics eng'],
     tags: ['Python', 'DuckDB', 'SQL', 'FastAPI', 'Chart.js', 'pytest'],
     summary:
-      'An analytics workspace for a programmatic ad exchange — live KPIs, six drill-down levels, and anomaly detection that names the likely cause.',
+      'An analytics workspace for a programmatic ad exchange: live KPIs, six drill-down levels, and anomaly detection that names the likely cause.',
     question:
-      'Can an ad exchange’s analytics workspace spot incidents on its own — and say which step of the funnel broke, not just that revenue fell?',
+      'Can an ad exchange’s analytics workspace spot incidents on its own and point to the step of the funnel that broke?',
     steps: [
       'Seeded generator simulates 12 buyers, 10 publishers and about 150 deals hour by hour, with planted incidents (outages, traffic drops, bot-like spikes, price cuts) and a hidden answer key.',
       'DuckDB star schema with rollups; each query reads the smallest table that can answer it, so a typical 31-day query takes 5–30 ms.',
@@ -48,8 +48,8 @@ const list: Omit<Project, 'num'>[] = [
     kind: 'Banking analytics',
     cats: ['ML', 'Finance', 'BI'],
     tags: ['Snowflake SQL', 'Python', 'Logistic regression', 'XGBoost', 'Tableau Public'],
-    summary: 'Which borrowers default, and where the risk concentrates — 150K+ loans, XGBoost AUC 0.87.',
-    question: 'Which borrowers are likely to default — and where does the lender’s risk concentrate?',
+    summary: 'Which borrowers default and where the risk concentrates, across 150K+ loans (XGBoost AUC 0.87).',
+    question: 'Which borrowers are likely to default, and where does the lender’s risk concentrate?',
     steps: [
       'Loaded 150K+ loan records from Kaggle’s “Give Me Some Credit” into Snowflake.',
       'Profiled and engineered features in SQL with CTEs, window functions and cohort analysis: revolving utilisation plus prior delinquency drove a 48% default rate, against 3% for low-risk borrowers.',
@@ -91,15 +91,15 @@ const list: Omit<Project, 'num'>[] = [
     cats: ['ML', 'Finance', 'BI'],
     tags: ['Python', 'pandas', 'scikit-learn', 'statsmodels', 'Plotly', 'Google Sheets'],
     summary:
-      'My own spending, read straight from a Google Sheet — budget, forecast and alerts — plus an ML lab that tests four models against the simple rules.',
+      'Real personal spending, read straight from a Google Sheet: budget, forecast and alerts, plus an ML lab that tests four models against the simple rules.',
     question:
-      'Where does my money actually go each month — and does machine learning beat plain rules at categorizing, forecasting and spotting the unusual?',
+      'Where does the money actually go each month, and does machine learning beat plain rules at categorizing, forecasting and spotting the unusual?',
     steps: [
-      'Reads 815 of my own transactions from a Google Sheet, or a sanitized demo copy that is safe to share (names pseudonymised, amounts shifted).',
+      'Reads 815 real transactions from a Google Sheet, or a sanitized demo copy that is safe to share (names pseudonymised, amounts shifted).',
       'Separates real spending from income, transfers and refunds; budget vs. actual per category; subscriptions and spending patterns.',
       'Rules first: unusual payments against each category’s median, and a run-rate month-end forecast, both checked on past months.',
       'ML lab: a TF-IDF + logistic regression categorizer, a weekly SARIMA forecast on daily spend, Isolation Forest scores and KMeans merchant groups.',
-      'Every model is tested against its rule on data it hasn’t seen, and kept only if it wins — KMeans didn’t, and the notebook says so.',
+      'Every model is tested against its rule on data it hasn’t seen, and kept only if it wins. KMeans didn’t, and the notebook says so.',
     ],
     results: [
       ['59%', 'of an unseen month categorized right by the model, vs 45% for the rules'],
@@ -118,9 +118,9 @@ const list: Omit<Project, 'num'>[] = [
     cats: ['Product'],
     tags: ['Flutter', 'Dart', 'Riverpod', 'go_router'],
     summary:
-      'Food delivery for NIT Silchar — every hostel canteen and snack stall in one app, delivered to your room by a fellow student.',
+      'Food delivery for NIT Silchar: every hostel canteen and snack stall in one app, delivered to your room by a fellow student.',
     question:
-      'Can a campus run its own food delivery — students ordering, students delivering, canteens cooking — from one app and one codebase?',
+      'Can a campus run its own food delivery, with students ordering, students delivering and canteens cooking, from one app and one codebase?',
     steps: [
       'Three sides in one Flutter app: students order, any student can switch on runner mode to deliver, vendors run an order board and edit their menu. Routing decides who sees which screens.',
       'Built on the real campus: all 16 hostels (room number required) plus SAC, the Library, Computer Centre and Auditorium; canteens in seven hostels, Tapri outside Hostel 9 and the snack stalls.',
@@ -150,13 +150,13 @@ const list: Omit<Project, 'num'>[] = [
     cats: ['Big data', 'ML'],
     tags: ['PySpark', 'Spark MLlib', 'Databricks', 'Delta tables', 'NumPy'],
     summary:
-      'A Spark recommender judged on what you actually watch next — built on 100K ratings, then scaled to 25M on Databricks.',
+      'A Spark recommender judged on what people actually watch next, built on 100K ratings and then scaled to 25M on Databricks.',
     question:
-      'Do collaborative-filtering recommendations beat “just show what’s popular” at ranking what a user watches next — and does the answer hold at 25 million ratings?',
+      'Do collaborative-filtering recommendations beat “just show what’s popular” at ranking what a user watches next, and does the answer hold at 25 million ratings?',
     steps: [
       'Loaded MovieLens into Delta tables on Databricks and profiled it in PySpark: at 25M ratings from 162K users the matrix is 99.74% empty, and the top 10% of movies hold 94% of all ratings.',
       'Split every user’s history by time: the last 5 ratings are the test, the 5 before them tune the models, so no model ever sees a user’s future.',
-      'Baselines first — the most popular movies, popularity weighted by the user’s favourite genres, and item-kNN — then Spark MLlib ALS in two forms: explicit, tuned on rating error, and implicit, tuned on ranking.',
+      'Baselines first (the most popular movies, popularity weighted by the user’s favourite genres, and item-kNN), then Spark MLlib ALS in two forms: explicit, tuned on rating error, and implicit, tuned on ranking.',
       'Scored every model on NDCG, MAP, precision and recall at 10, plus catalogue coverage and popularity bias. Built the top-10 lists from the ALS factors in NumPy, because Spark’s built-in method is blocked on serverless.',
       'Ran the same notebooks on 100K and then 25M ratings: implicit ALS’s lead over popularity grew from 59% to 94%, and its validation score now matches test (0.072 vs 0.074).',
       'The best rating predictor was the worst recommender: explicit ALS had the lowest error (RMSE 0.887) but an NDCG@10 of 0.000, because its top 10 were obscure movies from the long tail.',
@@ -187,7 +187,7 @@ const list: Omit<Project, 'num'>[] = [
     steps: [
       'Seeded generator for two synthetic sources, with injected errors and a ground-truth table.',
       'Bronze → silver → gold in Delta Lake: dedupe, late-data MERGE, schema enforcement.',
-      'Timezone handling as an explicit, tested parameter — never silent.',
+      'Timezone handling as an explicit, tested parameter.',
       'Rule-based reason codes plus drift detection, scored against ground truth.',
     ],
     done: 'Injected errors detected with per-type recall; totals tie to source.',
@@ -206,7 +206,7 @@ const list: Omit<Project, 'num'>[] = [
     steps: [
       'Tested dbt star schema on public e-commerce data.',
       'Funnel, cohort and RFM marts in Metabase.',
-      'A/B test with SRM check, CI and power — not just a p-value.',
+      'A/B test with an SRM check, confidence intervals and a power check.',
     ],
     done: 'dbt tests pass; dashboard live; A/B memo written.',
   },
@@ -254,7 +254,7 @@ const list: Omit<Project, 'num'>[] = [
     cats: ['Finance', 'BI'],
     tags: ['DuckDB', 'statsmodels', 'GARCH', 'Power BI'],
     summary:
-      'Volatility, drawdown and VaR across Nifty 50 — and whether simple strategies beat buy-and-hold after costs.',
+      'Volatility, drawdown and VaR across Nifty 50, and whether simple strategies beat buy-and-hold after costs.',
     question: 'Do simple strategies beat buy-and-hold on Nifty 50 once costs and lookahead are handled?',
     steps: [
       'Adjusted prices in DuckDB; survivorship bias stated.',
@@ -273,7 +273,7 @@ const list: Omit<Project, 'num'>[] = [
     tags: ['PySpark', 'Spark SQL', 'pandas', 'Plotly'],
     summary: 'Scheduled vs. actual delivery, reconciled like a billing close: where fulfillment slips, why, and what it costs.',
     question:
-      'Where does actual fulfillment drift from schedule — by warehouse, region, shipping mode and category — and is the late-delivery risk controllable or structural?',
+      'Where does actual fulfillment drift from schedule (by warehouse, region, shipping mode and category), and is the late-delivery risk controllable or structural?',
     steps: [
       'DataCo Smart Supply Chain orders loaded into PySpark; schema explored with Spark SQL.',
       'Scheduled vs. actual shipping days reconciled per order, with variances by warehouse, region, shipping mode and product category.',
@@ -291,7 +291,7 @@ const list: Omit<Project, 'num'>[] = [
     hobby: 'Dancing',
     cats: ['ML'],
     tags: ['XGBoost', 'SHAP', 'Streamlit'],
-    summary: 'Which audio features relate to track popularity — reported honestly, weak signal included.',
+    summary: 'Which audio features relate to track popularity, reported honestly even where the signal is weak.',
     question: 'Which audio and metadata features relate to popularity, and what natural clusters exist?',
     steps: [
       'Artist-grouped cross-validation to avoid leakage.',
@@ -348,6 +348,6 @@ export const workFilters = ['All', 'Shipped', 'Queue', 'ML', 'Finance', 'BI'];
 
 /** Work page header copy. Supports *emphasis* and the {shipped}/{queued}/{total} counters. */
 export const workPage = {
-  label: '(02) Index — {total} projects',
+  label: '(02) Index · {total} projects',
   lead: '{shipped:word} shipped. {queued:word} in the queue, *built in public* through January.',
 };

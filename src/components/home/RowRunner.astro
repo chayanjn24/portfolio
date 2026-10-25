@@ -18,7 +18,7 @@ const config = {
 <section class="section" id="game" data-runner data-config={JSON.stringify(config)}>
   <div class="head">
     <div class="stack" style="gap:20px">
-      <span class="label">{game.label} — best <span data-best>0</span></span>
+      <span class="label">{game.label} · best <span data-best>0</span></span>
       <h2 class="h2 title"><RevealLines lines={[game.title]} /></h2>
     </div>
     <div class="intro" data-reveal="fade">
@@ -34,7 +34,7 @@ const config = {
       <div class="stack over" data-over hidden>
         <span class="label crash-line">Pipeline crashed · <span class="nowrap"><span data-out="rows"></span> clean rows</span> · <span class="nowrap"><span data-out="dist"></span>&nbsp;m</span></span>
         <span class="score serif"><span data-out="score"></span> <em>pts</em></span>
-        <span class="rank serif">Rank — <span data-out="rank"></span></span>
+        <span class="rank serif">Rank: <span data-out="rank"></span></span>
       </div>
       <span class="idle serif" data-idle set:html={rich(game.idleTitle)} />
       <span class="pill pill--solid" data-start>{game.startLabel}</span>

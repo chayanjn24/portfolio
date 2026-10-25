@@ -28,7 +28,7 @@ const L = () => `(${letters[n++]})`;
 // Quick-jump items, lettered in the same order as the sections below.
 const jump = [
   { id: 'question', name: 'The question', on: true },
-  { id: 'approach', name: isShipped ? 'What I did' : 'The plan', on: true },
+  { id: 'approach', name: isShipped ? 'How it was built' : 'The plan', on: true },
   { id: 'results', name: 'Results', on: isShipped },
   { id: 'live', name: 'Explore it live', on: !!p.dashboards?.length },
 ]
@@ -99,7 +99,7 @@ const jump = [
       }
     </div>
     <div class="stack" id="approach" style="gap:20px">
-      <span class="label">{L()} {isShipped ? 'What I did' : 'The plan'}</span>
+      <span class="label">{L()} {isShipped ? 'How it was built' : 'The plan'}</span>
       <ol class="steps">
         {
           p.steps.map((s, i) => (
@@ -168,7 +168,7 @@ const jump = [
   }
 
   <a href={projectHref(next)} data-label={next.title} class="next">
-    <span class="label">Next project — {next.num}</span>
+    <span class="label">Next project · {next.num}</span>
     <span class="next-title serif">{next.title} →</span>
   </a>
 </BaseLayout>
