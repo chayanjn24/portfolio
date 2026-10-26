@@ -187,6 +187,18 @@ export const resume = {
       ],
     },
     {
+      title: 'Quick-Commerce Funnel',
+      id: 'quick-commerce',
+      stack: 'dbt · PostgreSQL · SQL · Python · Metabase',
+      when: '2026',
+      links: [{ label: 'GitHub', href: 'https://github.com/chayanjn24/quickcommerce-funnel' }],
+      points: [
+        'Modelled *120K Amazon India orders* and Blinkit orders, customers and campaigns in dbt on Postgres (25 models, 58 tests), with funnels, cohorts and RFM segments in a Metabase dashboard.',
+        'Found that four eastern states *return orders at twice the rate* of the rest of India (12.5% vs 6.4%), and that a promotion field only looked like it prevented cancellations because it is filled in after the order goes through.',
+        'Ran a *simulated A/B test* of a ₹100 win-back offer: reorders rose 10.1% (95% CI 3.1% to 17.2%), but each extra reorder cost ₹1,087 in discounts against ₹609 margin, so the offer was not rolled out.',
+      ],
+    },
+    {
       title: 'Student Performance Analysis Dashboard',
       stack: 'Power BI · DAX · SQL · ETL',
       when: '2024',
@@ -212,8 +224,8 @@ export const resume = {
   ] satisfies ResumeProject[],
 
   skills: [
-    { group: 'SQL & Python', items: 'SQL (joins, CTEs, window functions, query optimisation; MySQL, Redshift, AWS Athena, Snowflake, DuckDB), Python (Pandas, NumPy, Scikit-learn), PySpark and Spark MLlib on Databricks' },
-    { group: 'Analysis & modelling', items: 'Data quality, reconciliation and validation, root-cause and variance analysis, cohort analysis, KPI monitoring, A/B comparison, forecasting (SARIMA, baselines), anomaly detection (Isolation Forest, robust z-scores), text classification (TF-IDF), clustering (KMeans), logistic regression, XGBoost, recommender systems (ALS, item-kNN), model evaluation (AUC, F1, precision and recall, NDCG and MAP)' },
+    { group: 'SQL & Python', items: 'SQL (joins, CTEs, window functions, query optimisation; MySQL, PostgreSQL, Redshift, AWS Athena, Snowflake, DuckDB), dbt (models and tests), Python (Pandas, NumPy, Scikit-learn), PySpark and Spark MLlib on Databricks' },
+    { group: 'Analysis & modelling', items: 'Data quality, reconciliation and validation, root-cause and variance analysis, cohort, funnel and RFM analysis, KPI monitoring, A/B testing (sample size, sample ratio checks, confidence intervals), forecasting (SARIMA, baselines), anomaly detection (Isolation Forest, robust z-scores), text classification (TF-IDF), clustering (KMeans), logistic regression, XGBoost, recommender systems (ALS, item-kNN), model evaluation (AUC, F1, precision and recall, NDCG and MAP)' },
     { group: 'BI & reporting', items: 'Power BI (DAX), Tableau, Looker, Metabase, KPI dashboards, Excel (Power Query, pivot tables, XLOOKUP, VBA), Google Sheets, PowerPoint, ETL automation' },
     { group: 'Business analysis', items: 'Requirements gathering, Jira ticketing, user acceptance testing (UAT), stakeholder management, cross-functional communication, executive presentations' },
     { group: 'Ad tech', items: 'RTB, header bidding (Prebid), PMP deals, OpenRTB 2.5/2.6, VAST/VPAID, ads.txt and schain, IVT and brand safety, yield optimisation; Xandr Invest and Beeswax (hands-on), Amazon DSP (certified), Magnite, PubMatic, Xandr Monetize, Cedato' },

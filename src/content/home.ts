@@ -91,7 +91,7 @@ export const offTheClock = {
     { name: 'Photography', detail: 'Street, light and the in-between moments.' },
     { name: 'Trekking', detail: 'Sahyadri weekends, soon project {num:trek-planner}.' },
     { name: 'Dancing', detail: 'Freestyle floors, and the reason project {num:music-pop} asks what makes a hit.' },
-    { name: 'Cooking', detail: 'Recipes as experiments, feeding project {num:qcom-dbt}.' },
+    { name: 'Cooking', detail: 'Recipes as experiments, feeding project {num:quick-commerce}.' },
     { name: 'Movies', detail: 'A watchlist longer than any query history. Hence project {num:movie-recs}.' },
     { name: 'Vibe-coding', detail: '2 a.m. side projects, shipped for fun.' },
   ],
