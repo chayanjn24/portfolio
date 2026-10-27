@@ -49,6 +49,17 @@ export interface Project {
   coverPlaceholder?: string;
   /** Live Tableau Public dashboards, embedded on the project page (load on click). */
   dashboards?: Dashboard[];
+  /** Extra screenshots shown under the dashboards, e.g. a tool that can't be embedded. */
+  gallery?: Gallery;
+}
+
+export interface Gallery {
+  /** Section heading, e.g. 'Metabase dashboard'. */
+  title: string;
+  /** One line under the heading. */
+  note?: string;
+  /** Images inside /public, each with a short caption. */
+  images: { src: string; caption: string }[];
 }
 
 export interface Dashboard {
@@ -60,6 +71,8 @@ export interface Dashboard {
   preview: string;
   /** Width / height of the dashboard, e.g. 1472 / 908 — keeps the frame the right shape. */
   ratio: number;
+  /** Fixed dashboard width in px, if it has one; the embed is then scaled down to fit. */
+  width?: number;
 }
 
 export interface NavLink {

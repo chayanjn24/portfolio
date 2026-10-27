@@ -31,6 +31,7 @@ const jump = [
   { id: 'approach', name: isShipped ? 'How it was built' : 'The plan', on: true },
   { id: 'results', name: 'Results', on: isShipped },
   { id: 'live', name: 'Explore it live', on: !!p.dashboards?.length },
+  { id: 'gallery', name: p.gallery?.title ?? '', on: !!p.gallery },
 ]
   .filter((s) => s.on)
   .map((s, i) => ({ id: s.id, label: `(${letters[i]}) ${s.name}` }));
@@ -87,7 +88,7 @@ const jump = [
         hasFigure && (
           <figure class="figure" data-reveal="wipe">
             {p.cover ? (
-              <button type="button" class="zoom" data-zoom aria-label={`Enlarge the ${p.title} screenshot`}>
+              <button type="button" class="zoom" data-zoom={p.cover} data-alt={`${p.title} screenshot`} aria-label={`Enlarge the ${p.title} screenshot`}>
                 <ImageSlot src={p.cover} alt={`${p.title} screenshot`} placeholder={p.coverPlaceholder ?? p.title} ratio="16/10" natural loading="eager" />
                 <span class="zoom-hint label label--sm">⤢ Click to enlarge</span>
               </button>
@@ -139,6 +140,28 @@ const jump = [
   {p.dashboards && p.dashboards.length > 0 && <TableauEmbed id="live" dashboards={p.dashboards} label={`${L()} Explore it live`} />}
 
   {
+    p.gallery && (
+      <section class="gallery" id="gallery">
+        <div class="stack" style="gap:12px">
+          <span class="label">{L()} {p.gallery.title}</span>
+          {p.gallery.note && <p class="body">{p.gallery.note}</p>}
+        </div>
+        <div class="shots">
+          {p.gallery.images.map((img, i) => (
+            <figure class="shot" data-reveal="fade" data-delay={i * 80}>
+              <button type="button" class="zoom" data-zoom={img.src} data-alt={img.caption} aria-label={`Enlarge: ${img.caption}`}>
+                <img src={img.src} alt={img.caption} loading="lazy" decoding="async" />
+                <span class="zoom-hint label label--sm">⤢ Click to enlarge</span>
+              </button>
+              <figcaption class="label label--sm label--faint">{img.caption}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  {
     !isShipped && (
       <section class="status-wrap">
         <div class="status">
@@ -159,9 +182,9 @@ const jump = [
   }
 
   {
-    p.cover && (
+    (p.cover || p.gallery) && (
       <dialog class="lightbox" data-lightbox aria-label={`${p.title} screenshot`}>
-        <img src={p.cover} alt={`${p.title} screenshot, full size`} />
+        <img src={p.cover} alt={`${p.title} screenshot, full size`} data-lightbox-img />
         <button type="button" class="close label" data-close aria-label="Close">Close ✕</button>
       </dialog>
     )
@@ -176,7 +199,16 @@ const jump = [
 <script>
   // Click the screenshot to see it full-screen; Esc, the button or a click outside closes it.
   const dialog = document.querySelector<HTMLDialogElement>('[data-lightbox]');
-  document.querySelector('[data-zoom]')?.addEventListener('click', () => dialog?.showModal());
+  const big = dialog?.querySelector<HTMLImageElement>('[data-lightbox-img]');
+  document.querySelectorAll<HTMLElement>('[data-zoom]').forEach((btn) =>
+    btn.addEventListener('click', () => {
+      if (big) {
+        big.src = btn.dataset.zoom!;
+        big.alt = `${btn.dataset.alt}, full size`;
+      }
+      dialog?.showModal();
+    }),
+  );
   dialog?.addEventListener('click', (e) => {
     if (e.target === dialog || (e.target as Element).closest('[data-close]')) dialog.close();
   });
@@ -398,6 +430,38 @@ const jump = [
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
+  }
+
+  .gallery {
+    padding: 0 var(--gutter) clamp(80px, 10vw, 150px);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .gallery .body {
+    margin: 0;
+    max-width: 62ch;
+  }
+  .shots {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+    gap: 24px;
+    max-width: min(100%, 1200px);
+  }
+  .shot {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .shot img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    object-position: top;
+    border: 1px solid var(--line);
+    border-radius: 6px;
   }
 
   .status-wrap {

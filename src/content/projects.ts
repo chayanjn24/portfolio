@@ -174,13 +174,49 @@ const list: Omit<Project, 'num'>[] = [
     coverPlaceholder: 'Movie Recommender results',
   },
   {
+    id: 'nifty-risk',
+    status: 'shipped',
+    title: 'Nifty 50 Risk & Backtests',
+    kind: 'Markets · risk analytics',
+    cats: ['Finance', 'BI'],
+    tags: ['DuckDB SQL', 'Python', 'statsmodels', 'GARCH (arch)', 'Tableau Public', 'pytest'],
+    summary:
+      'How risky India’s 50 largest stocks are, what changes when markets get stressed, and whether simple strategies beat holding the index after costs.',
+    question:
+      'Do simple trading rules or smarter portfolio weights beat holding the Nifty 50 after costs, and what happens to risk when markets get stressed?',
+    steps: [
+      'Pulled daily prices from Jan 2015 to Oct 2026 for today’s 50 Nifty stocks, the index and the Nifty ETF (144,371 rows). Checked every daily move over 18% against news and fixed 4 errors in the Yahoo feed, including two demergers recorded as 40% losses.',
+      'Computed returns, drawdowns, time to recover, rolling volatility, CAGR, Sharpe and Sortino in DuckDB SQL with window functions, with every stock aligned to the index’s trading days.',
+      'Fitted CAPM beta for every stock (median 0.95), grouped them into 10 correlation clusters, and split the market into calm and stressed periods with a two-state Markov switching model. Stressed days were 10.7% of the sample, with three times the daily volatility.',
+      'Backtested one-day Value at Risk three ways (historical, normal, GARCH-t) with Kupiec and Christoffersen tests. For the index, only GARCH-t passed both at 99%: 36 breaches against 26.6 expected.',
+      'Ran moving-average timing, 12-1 momentum, a regime filter and five portfolio weightings (equal weight, inverse volatility, minimum variance, risk parity, HRP) out of sample from 2017, with 10 bps costs and trades using only the previous close.',
+      'Checked every result for luck with a 2,000-sample block bootstrap. Momentum made 25.6% a year but beat equal weight on the same stocks in only 45% of resamples, so its edge was survivorship bias.',
+      'Published a two-tab Tableau Public dashboard with linked filters for strategy, sector, cluster, beta and volatility.',
+    ],
+    results: [
+      ['6.6% vs 12.4%', 'a year: moving-average timing against buy-and-hold, after costs'],
+      ['0.19 → 0.49', 'average correlation between stocks, calm vs stressed markets'],
+      ['−32.6%', 'worst drawdown with HRP weights, against −37.9% for equal weight'],
+    ],
+    links: [
+      { label: 'Tableau Public', href: 'https://public.tableau.com/app/profile/chayan.gulgulia/viz/Nifty50RiskRegimesandBacktests/Strategies' },
+      { label: 'GitHub repo', href: 'https://github.com/chayanjn24/nifty50-risk' },
+    ],
+    cover: '/images/projects/nifty-strategies.png',
+    coverPlaceholder: 'Nifty 50 Tableau dashboard',
+    dashboards: [
+      { label: 'Strategies', view: 'Nifty50RiskRegimesandBacktests/Strategies', preview: '/images/projects/nifty-strategies.png', ratio: 1400 / 900, width: 1400 },
+      { label: 'Stock risk', view: 'Nifty50RiskRegimesandBacktests/Stockrisk', preview: '/images/projects/nifty-stocks.png', ratio: 1400 / 900, width: 1400 },
+    ],
+  },
+  {
     id: 'quick-commerce',
     status: 'shipped',
     title: 'Quick-Commerce Funnel',
     kind: 'Product analytics · Indian e-commerce',
     hobby: 'Cooking',
     cats: ['Product', 'Analytics eng'],
-    tags: ['dbt', 'PostgreSQL', 'Metabase', 'SQL', 'Python', 'A/B testing'],
+    tags: ['dbt', 'PostgreSQL', 'SQL', 'Python', 'A/B testing', 'Tableau Public', 'Metabase'],
     summary:
       'Where online orders drop out, which customers come back, and whether a ₹100 win-back discount pays for itself, on Amazon India and Blinkit data.',
     question:
@@ -192,16 +228,34 @@ const list: Omit<Project, 'num'>[] = [
       'Caught a trap in the Amazon data: orders with a promotion code look like they almost never get cancelled (0.4% vs 36.1%), but the code is only added once an order goes through. Left it out of the cancellation analysis.',
       'Found returns concentrated in the East: Assam, Bihar, Jharkhand and Odisha sent back 12.5% of the seller’s shipments, twice the 6.4% elsewhere, still clear after correcting for testing 19 states at once.',
       'Simulated a ₹100 win-back test for customers lapsed 60+ days, using Blinkit’s real reorder rate (9.55%) and basket sizes, with a known true effect. The analysis found it, a sample ratio check caught a planted tracking bug, and 2,000 reruns gave a 5.5% false-positive rate.',
-      'Built a four-tab Metabase dashboard on a read-only login that can’t see the raw data.',
+      'Published a three-tab Tableau Public dashboard of the findings, and built a four-tab Metabase dashboard on a read-only login that can’t see the raw data.',
     ],
     results: [
       ['+10.1%', 'more lapsed customers reordered with ₹100 off (simulated test, true effect +12%)'],
       ['₹1,087', 'discount per extra reorder, against ₹609 margin per order, so the offer was not rolled out'],
       ['2×', 'return rate in four eastern states vs the rest of India (12.5% vs 6.4%)'],
     ],
-    links: [{ label: 'GitHub repo', href: 'https://github.com/chayanjn24/quickcommerce-funnel' }],
-    cover: '/images/projects/quick-commerce.png',
+    links: [
+      { label: 'Tableau Public', href: 'https://public.tableau.com/app/profile/chayan.gulgulia/viz/Quick-CommerceFunnel/AmazonIndia' },
+      { label: 'GitHub repo', href: 'https://github.com/chayanjn24/quickcommerce-funnel' },
+    ],
+    cover: '/images/projects/qcom-amazon.png',
     coverPlaceholder: 'Quick-Commerce Funnel dashboard',
+    dashboards: [
+      { label: 'Amazon India', view: 'Quick-CommerceFunnel/AmazonIndia', preview: '/images/projects/qcom-amazon.png', ratio: 1400 / 900, width: 1400 },
+      { label: 'Blinkit customers', view: 'Quick-CommerceFunnel/Blinkitcustomers', preview: '/images/projects/qcom-blinkit.png', ratio: 1400 / 900, width: 1400 },
+      { label: 'Win-back test', view: 'Quick-CommerceFunnel/Win-backtest', preview: '/images/projects/qcom-winback.png', ratio: 1400 / 900, width: 1400 },
+    ],
+    gallery: {
+      title: 'Metabase dashboard',
+      note: 'The working dashboard used during the build, connected straight to Postgres. Metabase needs its own server, so these are screenshots.',
+      images: [
+        { src: '/images/projects/qcom-metabase-amazon.png', caption: 'Amazon India funnel' },
+        { src: '/images/projects/qcom-metabase-blinkit.png', caption: 'Blinkit customers' },
+        { src: '/images/projects/qcom-metabase-marketing.png', caption: 'Marketing and delivery' },
+        { src: '/images/projects/qcom-metabase-experiment.png', caption: 'Win-back experiment' },
+      ],
+    },
   },
   {
     id: 'recon-lakehouse',
@@ -256,24 +310,6 @@ const list: Omit<Project, 'num'>[] = [
       '10 years of weather → best-month score; Streamlit map.',
     ],
     done: 'Map and planner live.',
-  },
-  {
-    id: 'nifty-risk',
-    status: 'queued',
-    when: 'Dec 2026',
-    title: 'Nifty 50 Risk Lab',
-    kind: 'Markets',
-    cats: ['Finance', 'BI'],
-    tags: ['DuckDB', 'statsmodels', 'GARCH', 'Power BI'],
-    summary:
-      'Volatility, drawdown and VaR across Nifty 50, and whether simple strategies beat buy-and-hold after costs.',
-    question: 'Do simple strategies beat buy-and-hold on Nifty 50 once costs and lookahead are handled?',
-    steps: [
-      'Adjusted prices in DuckDB; survivorship bias stated.',
-      'Volatility, drawdown, beta, VaR with breach backtests.',
-      'Walk-forward backtests with costs and a one-day signal lag.',
-    ],
-    done: 'Risk dashboard; backtest with costs.',
   },
   {
     id: 'supply-chain',

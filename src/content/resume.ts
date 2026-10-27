@@ -23,7 +23,7 @@ export const resume = {
 
   /** Supports *emphasis*. */
   profile:
-    'Data and business analyst with hands-on work in revenue reporting, billing and reconciliation. Grew a *$2.6M+ annual revenue portfolio*, ran company-wide billing for 55+ revenue lines, and reconciled internal and partner data in SQL and Python until it tied out. Finds out why two numbers don’t match, fixes the cause, and automates the report so it stays right. Uses AI tools to move faster and *checks every output against source.*',
+    'Data and business analyst with a background in revenue reporting, billing and reconciliation. At AdElement Media, looked after a *$2.6M+ annual revenue portfolio* and cut the monthly billing close from 14 days to 3–4. Works mainly in SQL, Python and Excel, and uses AI tools day to day with *every output checked against source*.',
 
   /** "At a glance" strip. The first value is orange. */
   highlights: [
@@ -47,45 +47,40 @@ export const resume = {
         {
           title: 'Revenue & accounts',
           points: [
-            'Grew a *$2.6M+ annual revenue portfolio* of 15 demand-partner accounts (Magnite, PubMatic, Nexxen/Unruly, Xandr, FreeWheel and others) by *32% year on year*.',
-            'Scaled two newly launched accounts, Magnite and PubMatic, *about 10x*.',
-            'Onboarded *7+ new demand integrations*, and curated request filtering for Xandr, Magnite and PubMatic so each received the request types it bids on, lifting *ad requests 20%*.',
+            'Grew a *$2.6M+ annual revenue portfolio* of 15 demand-partner accounts (Magnite, PubMatic, Nexxen/Unruly, Xandr, FreeWheel and others) by *32% year on year*, through request filtering and floor-price tests.',
+            'Scaled two newly launched accounts, Magnite and PubMatic, *about 10x*, and onboarded *7+ new demand integrations*.',
+            'Opened *new revenue from low-volume publishers*: analysed their bundles and found new opportunities; leadership started a few, and they later became strong earners.',
+            'Lifted *ad requests 20%* by matching the request types sent to Xandr, Magnite and PubMatic to what each one bids on, without blocking valid traffic.',
           ],
         },
         {
           title: 'Billing & reconciliation',
           points: [
-            'Ran *company-wide monthly billing* for 55+ partner revenue lines across 10+ business entities: invoice checks, actualisation, revenue-share and shared-seat splits, IVT chargebacks and partner deductions.',
-            'Cut the month-end close from *14 days to 3–4*, reconciliation for invoicing included.',
-            'Reconciled *100K+ records every month* between internal and partner data in SQL (Redshift, AWS Athena, MySQL), fixing time-zone mismatches and flagging every gap above 5%.',
-            'Found a *bug in the revenue-change formula* that misreported changes for all 70+ demand partners. Spotted it unprompted, fixed it, and ran user acceptance testing against source data; the data team head confirmed the fix.',
+            'Cut the *month-end close from 14 days to 3–4* for company-wide billing (55+ partner revenue lines across 10+ business entities) by building SQL views that put our revenue and partner revenue from several databases side by side. Only the proofs were left to check by hand, so invoices were ready about 10 days sooner.',
+            'Reconciled *100K+ records every month* against partner reports in SQL (Redshift, AWS Athena, MySQL) before each invoice went out, fixing time-zone mismatches and flagging every gap above 5%.',
+            'Found a *bug in the revenue-change formula* that misreported daily changes for all 70+ demand partners, capping real jumps at 100%. Spotted it unprompted, fixed it and proved the fix with user acceptance testing against source data; the data team head confirmed it.',
           ],
         },
         {
           title: 'Data, automation & AI',
           points: [
-            'Automated *daily performance and account-health reports* for 10+ accounts (SQL → Python → Excel Power Query and VBA), replacing manual reporting and saving *7–8 hours a week*.',
-            'Built *3 Metabase dashboards* on a 10-minute refresh for demand and supply health, per-account revenue, and ads.txt and bundle checks, used daily by the team.',
-            'Cut a key SQL query from *10–15 minutes to 3–4* by filtering early instead of scanning full tables, on TB-scale daily ad-request logs in AWS Athena and Redshift.',
-            'Connected *Claude to internal databases through MCP* (read-only, company-approved) and kept a knowledge base of data sources and lessons that helps it improve, saving *2–3 hours a day* on pulling and checking data, with every output verified.',
+            'Replaced manual daily performance and account-health reports for 10+ accounts with a pipeline (SQL → Python → Excel Power Query and VBA), saving *7–8 hours a week*.',
+            'Built *3 Metabase dashboards* on a 10-minute refresh that flagged IVT spikes, revenue drops, margin changes and bundle problems, so the team of 10+ could act without running a query.',
+            'Saved *about an hour a day* by rewriting a per-account SQL query on TB-scale ad-request logs in AWS Athena and Redshift (*20 minutes to 10* per account): joined the data inside the query, filtered early and dropped repeated fields.',
+            'Saved *2–3 hours a day* on the slowest part of analysis, pulling and checking data, by connecting *Claude to internal databases through MCP* (read-only, company-approved) with a knowledge base of data sources and lessons that keeps improving it. Every output was verified against source.',
           ],
         },
         {
-          title: 'Stakeholders & delivery',
+          title: 'Leadership reporting',
           points: [
-            'Presented monthly revenue reports to the *CEO, COO and founder* and parent-company executives, and turned around *3+ ad-hoc analysis requests a week* within 2–3 hours.',
-            'Turned requirements from leadership, partners and clients into Jira tickets for data engineering, *about 5 a day*, on reporting logic and data fixes.',
-            'Supported a platform transition by keeping a daily side-by-side comparison of two in-house ad servers on identical traffic (IVT, fill rate, CPM).',
+            'Turned around *3+ ad-hoc leadership requests a week* within 2–3 hours, and presented the monthly revenue report to the *CEO, COO and founder* and parent-company executives.',
           ],
         },
         {
-          title: 'Ad tech, yield & quality',
+          title: 'Yield & traffic quality',
           points: [
-            'Compared two versions of the same supply side by side and tested floor prices, lifting *eCPM from $0.50 to $0.70* on tested supply and keeping revenue per million requests above $2 when demand was thin.',
-            'Fixed *zero-bid and zero-delivery issues* by comparing OpenRTB bid requests field by field (bidfloor, mimes, tmax, duration, schain, app and publisher IDs) and correcting VAST macro mapping with partner tech teams.',
-            'Measured how *Extended IDs* affect bids and revenue, ranked supply by OS and supply type, and built partner-level QPS action plans; QPS throttling cut wasted requests *about 15%*.',
-            'Kept bundle-level *invalid traffic under the SSPs’ 2.5% ceiling* with IVT filtering, brand-safety rules, bundle allowlists, and ads.txt, app-ads.txt and schain checks in SQL.',
-            'Set up and fixed *PMP and preferred deals* through SSP partners for DV360 and The Trade Desk buyers, resolving deal ID, floor, targeting and seat mismatches.',
+            'Tested floor prices on two versions of the same supply side by side: *eCPM rose from $0.50 to $0.70*, and revenue per million requests stayed above $2 when demand was thin.',
+            'Kept bundle-level *invalid traffic under the SSPs’ 2.5% ceiling* with IVT filtering, bundle allowlists and ads.txt checks in SQL, so partners kept buying the supply and IVT chargebacks fell.',
           ],
         },
       ],
@@ -99,10 +94,9 @@ export const resume = {
       groups: [
         {
           points: [
-            'Ran 8 programmatic display campaigns (*£160K budget*) on Xandr Invest and Beeswax for 8+ real-estate clients: setup, trafficking, creative QA, targeting and bidding.',
-            'Kept budget pacing within *95–105% of plan* by adjusting CPM bids, tracked in daily pacing reports built in Excel from platform APIs and UIs.',
-            'Built full-funnel audience strategies for property launches (geo, HNWI, real-estate intenders, retirement investors) and lifted *conversions 15–23%* (sign-ups, booked calls) through segmentation and A/B testing.',
-            'Automated recurring campaign reporting through APIs and Looker, cutting turnaround *35%*.',
+            'Kept 8 display campaigns (*£160K budget*) on Xandr Invest and Beeswax within *95–105% of planned spend* by adjusting CPM bids from daily Excel pacing reports.',
+            'Lifted *conversions 15–23%* (sign-ups, booked calls) for 8+ real-estate clients by building audiences for each property launch (geo, high-net-worth, real-estate intenders, retirement investors) and A/B testing them.',
+            'Cut reporting turnaround *35%* by automating recurring campaign reports through APIs and Looker.',
           ],
         },
       ],
@@ -187,13 +181,31 @@ export const resume = {
       ],
     },
     {
+      title: 'Nifty 50 Risk & Backtests',
+      id: 'nifty-risk',
+      stack: 'DuckDB SQL · Python · statsmodels · GARCH · Tableau',
+      when: '2026',
+      links: [
+        { label: 'GitHub', href: 'https://github.com/chayanjn24/nifty50-risk' },
+        { label: 'Tableau Public', href: 'https://public.tableau.com/app/profile/chayan.gulgulia/viz/Nifty50RiskRegimesandBacktests/Strategies' },
+      ],
+      points: [
+        'Backtested trading rules and 5 portfolio weightings on *Nifty 50 stocks* out of sample (2017–2026, after costs): a moving-average timing rule earned *6.6% a year against 12.4%* for buy-and-hold.',
+        'Tested one-day *Value at Risk* three ways with Kupiec and Christoffersen backtests; only *GARCH-t passed both at 99%* for the index (36 breaches against 26.6 expected).',
+        'Showed that momentum’s *25.6% a year* was mostly *survivorship bias*: equal weight on the same 50 stocks made 21.9%. Fixed 4 errors in the Yahoo price feed after checking every move over 18% against news.',
+      ],
+    },
+    {
       title: 'Quick-Commerce Funnel',
       id: 'quick-commerce',
-      stack: 'dbt · PostgreSQL · SQL · Python · Metabase',
+      stack: 'dbt · PostgreSQL · SQL · Python · Tableau · Metabase',
       when: '2026',
-      links: [{ label: 'GitHub', href: 'https://github.com/chayanjn24/quickcommerce-funnel' }],
+      links: [
+        { label: 'GitHub', href: 'https://github.com/chayanjn24/quickcommerce-funnel' },
+        { label: 'Tableau Public', href: 'https://public.tableau.com/app/profile/chayan.gulgulia/viz/Quick-CommerceFunnel/AmazonIndia' },
+      ],
       points: [
-        'Modelled *120K Amazon India orders* and Blinkit orders, customers and campaigns in dbt on Postgres (25 models, 58 tests), with funnels, cohorts and RFM segments in a Metabase dashboard.',
+        'Modelled *120K Amazon India orders* and Blinkit orders, customers and campaigns in dbt on Postgres (25 models, 58 tests), with funnels, cohorts and RFM segments in Tableau Public and Metabase dashboards.',
         'Found that four eastern states *return orders at twice the rate* of the rest of India (12.5% vs 6.4%), and that a promotion field only looked like it prevented cancellations because it is filled in after the order goes through.',
         'Ran a *simulated A/B test* of a ₹100 win-back offer: reorders rose 10.1% (95% CI 3.1% to 17.2%), but each extra reorder cost ₹1,087 in discounts against ₹609 margin, so the offer was not rolled out.',
       ],
@@ -225,7 +237,7 @@ export const resume = {
 
   skills: [
     { group: 'SQL & Python', items: 'SQL (joins, CTEs, window functions, query optimisation; MySQL, PostgreSQL, Redshift, AWS Athena, Snowflake, DuckDB), dbt (models and tests), Python (Pandas, NumPy, Scikit-learn), PySpark and Spark MLlib on Databricks' },
-    { group: 'Analysis & modelling', items: 'Data quality, reconciliation and validation, root-cause and variance analysis, cohort, funnel and RFM analysis, KPI monitoring, A/B testing (sample size, sample ratio checks, confidence intervals), forecasting (SARIMA, baselines), anomaly detection (Isolation Forest, robust z-scores), text classification (TF-IDF), clustering (KMeans), logistic regression, XGBoost, recommender systems (ALS, item-kNN), model evaluation (AUC, F1, precision and recall, NDCG and MAP)' },
+    { group: 'Analysis & modelling', items: 'Data quality, reconciliation and validation, root-cause and variance analysis, cohort, funnel and RFM analysis, KPI monitoring, A/B testing (sample size, sample ratio checks, confidence intervals), forecasting (SARIMA, baselines), anomaly detection (Isolation Forest, robust z-scores), text classification (TF-IDF), clustering (KMeans), risk and backtesting (VaR with Kupiec and Christoffersen tests, GARCH, CAPM beta, Markov regimes, bootstrap), logistic regression, XGBoost, recommender systems (ALS, item-kNN), model evaluation (AUC, F1, precision and recall, NDCG and MAP)' },
     { group: 'BI & reporting', items: 'Power BI (DAX), Tableau, Looker, Metabase, KPI dashboards, Excel (Power Query, pivot tables, XLOOKUP, VBA), Google Sheets, PowerPoint, ETL automation' },
     { group: 'Business analysis', items: 'Requirements gathering, Jira ticketing, user acceptance testing (UAT), stakeholder management, cross-functional communication, executive presentations' },
     { group: 'Ad tech', items: 'RTB, header bidding (Prebid), PMP deals, OpenRTB 2.5/2.6, VAST/VPAID, ads.txt and schain, IVT and brand safety, yield optimisation; Xandr Invest and Beeswax (hands-on), Amazon DSP (certified), Magnite, PubMatic, Xandr Monetize, Cedato' },

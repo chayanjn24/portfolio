@@ -38,7 +38,7 @@ const embedUrl = (d: Dashboard) =>
   {
     dashboards.map((d, i) => (
       <div class:list={['panel', { 'is-off': i !== 0 }]} data-panel={i} aria-hidden={i !== 0 ? 'true' : undefined} style={`--ratio:${d.ratio}`}>
-        <div class="frame" data-frame data-src={embedUrl(d)}>
+        <div class="frame" data-frame data-src={embedUrl(d)} data-width={d.width}>
           <img src={d.preview} alt={`${d.label} dashboard preview`} loading="lazy" decoding="async" />
           <div class="veil">
             <button type="button" class="pill pill--solid load" data-load>▶ Load live dashboard</button>
@@ -79,7 +79,14 @@ const embedUrl = (d: Dashboard) =>
         iframe.allowFullscreen = true;
         iframe.setAttribute('data-lenis-prevent', ''); // let the dashboard scroll itself
         const ratio = Number(getComputedStyle(frame.parentElement!).getPropertyValue('--ratio')) || 1.6;
-        const fit = () => (frame.style.height = `${frame.clientWidth / ratio + 27}px`);
+        const width = Number(frame.dataset.width); // fixed-size dashboards: render at full size, then scale to fit
+        const fit = () => {
+          if (!width) return void (frame.style.height = `${frame.clientWidth / ratio + 27}px`);
+          const scale = Math.min(1, frame.clientWidth / width);
+          const h = width / ratio + 27;
+          Object.assign(iframe.style, { width: `${width}px`, height: `${h}px`, transform: `scale(${scale})`, transformOrigin: '0 0' });
+          frame.style.height = `${h * scale}px`;
+        };
         frame.classList.add('is-live');
         fit();
         new ResizeObserver(fit).observe(frame);
