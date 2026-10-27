@@ -35,7 +35,7 @@ const list: Omit<Project, 'num'>[] = [
       ['5–30 ms', 'typical 31-day query'],
     ],
     links: [
-      { label: 'Live demo', href: 'https://tallyline.onrender.com' },
+      { label: 'Live demo (slow first load)', href: 'https://tallyline.onrender.com' },
       { label: 'GitHub repo', href: 'https://github.com/chayanjn24/tallyline' },
     ],
     cover: '/images/projects/tallyline.png',

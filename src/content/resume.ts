@@ -129,7 +129,7 @@ export const resume = {
       stack: 'Python · DuckDB · SQL · FastAPI · Chart.js · pytest',
       when: '2026',
       links: [
-        { label: 'Live demo', href: 'https://tallyline.onrender.com' },
+        { label: 'Live demo (slow first load)', href: 'https://tallyline.onrender.com' },
         { label: 'GitHub', href: 'https://github.com/chayanjn24/tallyline' },
       ],
       points: [

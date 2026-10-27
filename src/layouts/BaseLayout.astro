@@ -16,9 +16,11 @@ interface Props {
   description?: string;
   /** Show the big "Let's make the numbers talk" call-to-action in the footer. */
   footerCta?: boolean;
+  /** Keep the page out of search results (the 404 page). */
+  noindex?: boolean;
 }
 
-const { title, description = site.description, footerCta = true } = Astro.props;
+const { title, description = site.description, footerCta = true, noindex = false } = Astro.props;
 const fullTitle = title ? `${title} · ${site.fullName}` : `${site.fullName} · ${site.role}`;
 const siteUrl = Astro.site ?? new URL(Astro.url.origin);
 const canonical = new URL(Astro.url.pathname, siteUrl).href;
@@ -47,7 +49,7 @@ const person = {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
     <meta name="theme-color" content="#0B0A09" data-theme-color />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="sitemap" href="/sitemap-index.xml" />

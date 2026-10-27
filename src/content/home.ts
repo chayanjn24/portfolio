@@ -76,7 +76,7 @@ export const capabilities = {
     { title: 'Data analytics', detail: 'SQL · Python · PySpark' },
     { title: 'Business analysis', detail: 'Question → decision' },
     { title: 'Machine learning', detail: 'XGBoost · Spark ALS · forecasting' },
-    { title: 'Finance & fintech', detail: 'Credit risk · fraud · revenue' },
+    { title: 'Finance & fintech', detail: 'Credit risk · market risk · revenue' },
     { title: 'Dashboards & BI', detail: 'Tableau · Power BI · Plotly' },
     { title: 'Automation', detail: 'Reports that run themselves' },
   ],

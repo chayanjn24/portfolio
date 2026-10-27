@@ -65,9 +65,11 @@ const jump = [
               <div class="hobby-body">
                 <div class="clip">
                   <div class="hobby-inner">
-                    <div class="h-img">
-                      <ImageSlot src={h.image} alt={h.name} placeholder={h.imagePlaceholder} ratio="4/3" />
-                    </div>
+                    {h.image && (
+                      <div class="h-img">
+                        <ImageSlot src={h.image} alt={h.name} placeholder={h.imagePlaceholder} ratio="4/3" />
+                      </div>
+                    )}
                     <div class="stack" style="gap:14px">
                       <span class="label label--sm move-k">Special move</span>
                       <span class="move serif">{h.move}</span>
