@@ -20,6 +20,8 @@ document.addEventListener(
   (e) => {
     const a = (e.target as Element | null)?.closest?.('a[href]') as HTMLAnchorElement | null;
     if (!a || e.defaultPrevented) return;
+    // "#" links are buttons in disguise (e.g. map zoom controls), and widgets can opt out
+    if (a.getAttribute('href') === '#' || a.closest('[data-no-curtain]')) return;
     if (a.target === '_blank' || a.hasAttribute('download') || e.button !== 0) return;
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
 

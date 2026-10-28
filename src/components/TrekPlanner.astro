@@ -15,7 +15,7 @@ const { label, id } = Astro.props;
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 ---
 
-<section class="planner" id={id} data-planner>
+<section class="planner" id={id} data-planner data-no-curtain>
   <div class="head">
     <span class="label">{label}</span>
     <span class="label label--sm label--faint">Click a trail on the map or a row in the table</span>
@@ -49,7 +49,7 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
   <p class="count label label--sm" data-count aria-live="polite"></p>
 
   <div class="grid">
-    <div class="map" data-map data-lenis-prevent aria-label="Map of the treks"></div>
+    <div class="map" data-map aria-label="Map of the treks. Click it to zoom with the scroll wheel."></div>
     <aside class="card" data-card aria-live="polite"></aside>
   </div>
 
@@ -77,6 +77,7 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
     nearest: string; nearestKm: number; line: [number, number][]; score: number[]; rainDays: number[];
     high: number[]; profile: [number, number][];
   };
+  type Layers = { group: L.FeatureGroup; halo: L.Polyline; line: L.Polyline; dot: L.CircleMarker };
 
   const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const root = document.querySelector<HTMLElement>('[data-planner]');
@@ -85,66 +86,84 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 
   async function init(root: HTMLElement) {
     const treks: Trek[] = await fetch('/data/treks.json').then((r) => r.json());
+    const byName = new Map(treks.map((t) => [t.name, t]));
     const $ = <T extends Element>(s: string) => root.querySelector<T>(s)!;
     const state = { month: 11, levels: new Set(['Easy', 'Moderate', 'Hard']), pune: 120, climb: 1100, pick: '' };
+    let shown: Trek[] = [];
 
     // colours come from CSS, so they follow the light/dark toggle
-    const css = (v: string) => getComputedStyle(root).getPropertyValue(v).trim();
-    const colour = (t: Trek) => css(`--${t.level.toLowerCase()}`);
+    let ink = { text: '', bg: '', easy: '', moderate: '', hard: '' };
+    const readInk = () => {
+      const cs = getComputedStyle(root);
+      const v = (n: string) => cs.getPropertyValue(n).trim();
+      ink = { text: v('--text'), bg: v('--bg'), easy: v('--easy'), moderate: v('--moderate'), hard: v('--hard') };
+    };
+    readInk();
+    const colour = (t: Trek) => ink[t.level.toLowerCase() as 'easy' | 'moderate' | 'hard'];
 
+    // ---- map, built once
     const mapEl = $<HTMLElement>('[data-map]');
-    const map = L.map(mapEl, { zoomSnap: 0.25, scrollWheelZoom: false })
-      .fitBounds(L.latLngBounds(treks.flatMap((t) => t.line)), { padding: [16, 16] });
+    const map = L.map(mapEl, {
+      zoomSnap: 0.25,
+      zoomDelta: 1,
+      wheelPxPerZoomLevel: 140,
+      scrollWheelZoom: false,
+      renderer: L.svg({ padding: 0.5 }),
+    }).fitBounds(L.latLngBounds(treks.flatMap((t) => t.line)), { padding: [16, 16] });
+    map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a>');
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 16,
-      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      keepBuffer: 4,
+      attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>',
     }).addTo(map);
-    // scroll zooms the map only after it has been clicked, so the page still scrolls past it
-    map.on('click', () => map.scrollWheelZoom.enable());
-    map.on('mouseout', () => map.scrollWheelZoom.disable());
-    const layer = L.layerGroup().addTo(map);
 
-    const visible = () =>
-      treks
-        .filter((t) => state.levels.has(t.level) && t.pune <= state.pune && t.climb <= state.climb)
-        .sort((a, b) => b.score[state.month] - a.score[state.month] || a.name.localeCompare(b.name));
+    // the page scrolls smoothly over the map until you click into it; then the wheel zooms
+    const wheel = (on: boolean) => {
+      on ? map.scrollWheelZoom.enable() : map.scrollWheelZoom.disable();
+      mapEl.toggleAttribute('data-lenis-prevent', on);
+      mapEl.classList.toggle('is-active', on);
+    };
+    mapEl.addEventListener('pointerdown', () => wheel(true));
+    mapEl.addEventListener('mouseleave', () => wheel(false));
 
-    function select(name: string, fly: boolean) {
-      state.pick = name;
-      render();
-      const t = treks.find((x) => x.name === name);
-      if (!t || !fly) return;
-      map.flyToBounds(L.latLngBounds(t.line).pad(0.6), { maxZoom: 13, duration: 0.8 });
-      // on phones the map sits above the table, so bring it into view
-      const box = mapEl.getBoundingClientRect();
-      if (box.bottom < 80 || box.top > innerHeight - 80) mapEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
+    map.on('zoomend', () => (mapEl.dataset.zoom = String(map.getZoom())));
 
-    function drawMap(list: Trek[]) {
-      layer.clearLayers();
-      // selected trek last, so it sits on top
-      [...list].sort((a, b) => Number(a.name === state.pick) - Number(b.name === state.pick)).forEach((t) => {
-        const on = t.name === state.pick;
-        const tip = `<b>${t.name}</b><br>${t.level} · ${t.km} km · ${t.climb} m up<br>${MONTHS[state.month]} score ${t.score[state.month]}`;
-        if (on) L.polyline(t.line, { color: css('--text'), weight: 11, opacity: 0.85, interactive: false }).addTo(layer);
-        const line = L.polyline(t.line, { color: colour(t), weight: on ? 6 : 5, opacity: on ? 1 : 0.8 }).addTo(layer);
-        // fat invisible line underneath makes short trails easy to hit
-        const hit = L.polyline(t.line, { color: '#000', weight: 22, opacity: 0 }).addTo(layer);
-        const dot = L.circleMarker(t.line[0], {
-          radius: on ? 8 : 5, color: on ? css('--text') : css('--bg'), weight: 2, fillColor: colour(t), fillOpacity: 1,
-        }).addTo(layer);
-        for (const l of [line, hit, dot]) {
-          l.bindTooltip(tip, { sticky: true, className: 'trek-tip' });
-          l.on('click', (e) => { L.DomEvent.stopPropagation(e); select(t.name, false); });
-        }
+    const layers = new Map<string, Layers>();
+    for (const t of treks) {
+      const tip = () => {
+        const m = state.month;
+        return `<b>${t.name}</b><br>${t.level} · ${t.km} km · ${t.climb} m up<br>${MONTHS[m]} score ${t.score[m]}`;
+      };
+      const halo = L.polyline(t.line, { weight: 11, opacity: 0, interactive: false });
+      const line = L.polyline(t.line, { weight: 5, opacity: 0.85 });
+      // a wide invisible line on top makes short trails easy to hit
+      const hit = L.polyline(t.line, { weight: 22, opacity: 0 });
+      const dot = L.circleMarker(t.line[0], { radius: 5, weight: 2, fillOpacity: 1 });
+      const group = L.featureGroup([halo, line, dot, hit]);
+      group.bindTooltip(tip, { sticky: true, className: 'trek-tip' });
+      group.on('click', (e) => {
+        L.DomEvent.stopPropagation(e);
+        select(t.name, false);
       });
+      layers.set(t.name, { group, halo, line, dot });
     }
 
+    function paint(t: Trek) {
+      const l = layers.get(t.name)!;
+      const on = t.name === state.pick;
+      l.halo.setStyle({ color: ink.text, opacity: on ? 0.85 : 0 });
+      l.line.setStyle({ color: colour(t), weight: on ? 6 : 5, opacity: on ? 1 : 0.85 });
+      l.dot.setStyle({ color: on ? ink.text : ink.bg, fillColor: colour(t) });
+      l.dot.setRadius(on ? 8 : 5);
+      if (on) l.group.bringToFront();
+    }
+
+    // ---- card
     function profileSvg(t: Trek) {
       const W = 520, H = 150, pad = { l: 40, r: 8, t: 10, b: 22 };
       const xs = t.profile.map((p) => p[0]), ys = t.profile.map((p) => p[1]);
-      const x0 = 0, x1 = Math.max(...xs), y0 = Math.min(...ys) - 30, y1 = Math.max(...ys) + 20;
-      const sx = (x: number) => pad.l + ((x - x0) / (x1 - x0 || 1)) * (W - pad.l - pad.r);
+      const x1 = Math.max(...xs), y0 = Math.min(...ys) - 30, y1 = Math.max(...ys) + 20;
+      const sx = (x: number) => pad.l + (x / (x1 || 1)) * (W - pad.l - pad.r);
       const sy = (y: number) => pad.t + (1 - (y - y0) / (y1 - y0)) * (H - pad.t - pad.b);
       const line = t.profile.map((p, i) => `${i ? 'L' : 'M'}${sx(p[0]).toFixed(1)},${sy(p[1]).toFixed(1)}`).join('');
       const area = `${line}L${sx(x1)},${H - pad.b}L${sx(0)},${H - pad.b}Z`;
@@ -160,8 +179,9 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
       </svg>`;
     }
 
-    function drawCard(t: Trek | undefined) {
-      const card = $<HTMLElement>('[data-card]');
+    const card = $<HTMLElement>('[data-card]');
+    function drawCard() {
+      const t = byName.get(state.pick);
       if (!t) {
         card.innerHTML = `<p class="serif empty">Nothing matches. Try a longer drive or more difficulty levels.</p>`;
         return;
@@ -190,9 +210,11 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
         ${disagree}`;
     }
 
-    function drawTable(list: Trek[]) {
+    // ---- table
+    const rows = $<HTMLElement>('[data-rows]');
+    function drawTable() {
       $<HTMLElement>('[data-score-head]').textContent = `${MONTHS[state.month]} score`;
-      $<HTMLElement>('[data-rows]').innerHTML = list.map((t) => `
+      rows.innerHTML = shown.map((t) => `
         <tr data-name="${t.name}" class="${t.name === state.pick ? 'is-on' : ''}" tabindex="0">
           <td><i class="dot dot--${t.level.toLowerCase()}"></i>${t.name}</td><td>${t.level}</td>
           <td><span class="meter"><i style="width:${t.score[state.month]}%"></i></span>${t.score[state.month]}</td>
@@ -200,22 +222,47 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
         </tr>`).join('');
     }
 
-    function render() {
-      const list = visible();
-      if (!list.some((t) => t.name === state.pick)) state.pick = list[0]?.name ?? '';
-      $<HTMLElement>('[data-count]').textContent =
-        `${list.length} of ${treks.length} treks · best for ${MONTHS[state.month]} first`;
-      drawMap(list);
-      drawCard(list.find((t) => t.name === state.pick));
-      drawTable(list);
+    // ---- updates: filters rebuild the list, a selection only touches what changed
+    function refilter() {
+      shown = treks
+        .filter((t) => state.levels.has(t.level) && t.pune <= state.pune && t.climb <= state.climb)
+        .sort((a, b) => b.score[state.month] - a.score[state.month] || a.name.localeCompare(b.name));
+      const keep = new Set(shown.map((t) => t.name));
+      for (const [name, l] of layers) {
+        const want = keep.has(name);
+        if (want && !map.hasLayer(l.group)) l.group.addTo(map);
+        if (!want && map.hasLayer(l.group)) l.group.remove();
+      }
+      if (!keep.has(state.pick)) state.pick = shown[0]?.name ?? '';
+      shown.forEach(paint);
+      $<HTMLElement>('[data-count]').textContent = `${shown.length} of ${treks.length} treks · best for ${MONTHS[state.month]} first`;
+      drawTable();
+      drawCard();
     }
 
-    // filters
+    function select(name: string, fly: boolean) {
+      if (name === state.pick && !fly) return;
+      const prev = byName.get(state.pick);
+      state.pick = name;
+      if (prev) paint(prev);
+      const t = byName.get(name)!;
+      paint(t);
+      rows.querySelector('tr.is-on')?.classList.remove('is-on');
+      rows.querySelector(`tr[data-name="${CSS.escape(name)}"]`)?.classList.add('is-on');
+      drawCard();
+      if (!fly) return;
+      map.flyToBounds(L.latLngBounds(t.line).pad(0.6), { maxZoom: 13, duration: 0.9, easeLinearity: 0.2 });
+      // on phones the map sits above the table, so bring it into view
+      const box = mapEl.getBoundingClientRect();
+      if (box.bottom < 80 || box.top > innerHeight - 80) mapEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // ---- inputs
     root.querySelectorAll<HTMLButtonElement>('[data-month]').forEach((b) =>
       b.addEventListener('click', () => {
         state.month = Number(b.dataset.month);
         root.querySelectorAll('[data-month]').forEach((x) => x.classList.toggle('is-on', x === b));
-        render();
+        refilter();
       }),
     );
     root.querySelectorAll<HTMLButtonElement>('[data-level]').forEach((b) =>
@@ -225,32 +272,41 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
         state.levels.has(g) ? state.levels.delete(g) : state.levels.add(g);
         b.classList.toggle('is-on', state.levels.has(g));
         b.setAttribute('aria-pressed', String(state.levels.has(g)));
-        render();
+        refilter();
       }),
     );
+    // sliders fire on every pixel; redraw at most once a frame
+    let frame = 0;
     root.querySelectorAll<HTMLInputElement>('[data-range]').forEach((r) =>
       r.addEventListener('input', () => {
         const k = r.dataset.range as 'pune' | 'climb';
         state[k] = Number(r.value);
         $<HTMLElement>(`[data-out="${k}"]`).textContent = k === 'pune' ? `${r.value} km` : `${Number(r.value).toLocaleString('en-IN')} m`;
-        render();
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(refilter);
       }),
     );
 
-    // table rows select the trek and fly the map to it
-    const rows = $<HTMLElement>('[data-rows]');
     const pickRow = (e: Event) => {
       const tr = (e.target as HTMLElement).closest<HTMLElement>('tr[data-name]');
       if (tr) select(tr.dataset.name!, true);
     };
     rows.addEventListener('click', pickRow);
-    rows.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pickRow(e); } });
+    rows.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        pickRow(e);
+      }
+    });
 
-    // redraw line colours when the theme changes
-    new MutationObserver(render).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-    new ResizeObserver(() => map.invalidateSize()).observe(mapEl);
+    // theme toggle: recolour lines, nothing else changes
+    new MutationObserver(() => {
+      readInk();
+      shown.forEach(paint);
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    new ResizeObserver(() => map.invalidateSize({ pan: false })).observe(mapEl);
 
-    render();
+    refilter();
   }
 </script>
 
@@ -358,20 +414,27 @@ const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
     background: var(--surface);
     z-index: 0;
   }
+  /* orange edge while the scroll wheel zooms the map instead of the page */
+  .map {
+    transition: border-color 0.3s;
+  }
+  .map:global(.is-active) {
+    border-color: rgba(var(--accent-rgb), 0.6);
+  }
   /* the standard OSM tiles, darkened to sit in the dark theme */
-  :global(:root:not([data-theme='light'])) .map :global(.leaflet-tile-pane) {
+  :global(:root:not([data-theme='light'])) .map :global(img.leaflet-tile) {
     filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.85) saturate(0.4);
   }
   /* and toned down on the light "paper" theme */
-  :global(:root[data-theme='light']) .map :global(.leaflet-tile-pane) {
+  :global(:root[data-theme='light']) .map :global(img.leaflet-tile) {
     filter: saturate(0.55) sepia(0.12) brightness(1.02);
   }
   /* Leaflet brightens tile edges (plus-lighter) to hide seams, which the invert above
-     turns into dark lines. Overlap tiles by half a pixel instead. */
+     turns into dark lines. Overlap tiles by a pixel instead. */
   .map :global(img.leaflet-tile) {
     mix-blend-mode: normal;
-    width: 256.5px !important;
-    height: 256.5px !important;
+    width: 257px !important;
+    height: 257px !important;
   }
   .map:global(.leaflet-container) {
     font-family: var(--mono);
