@@ -6,6 +6,8 @@ import { contact } from '@content/contact';
 import { rich } from '@lib/text';
 
 const { form } = contact;
+// Web3Forms access key (public by design: it only lets the form send to my inbox). Without it the form opens the mail app.
+const formKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
 ---
 
 <BaseLayout title="Contact" footerCta={false}>
@@ -30,10 +32,10 @@ const { form } = contact;
         <span class="label label--sm" style="line-height:1.7">{contact.locations}</span>
       </div>
 
-      <form class="card" data-reveal="fade" data-delay="150" data-mail-form data-email={site.email}>
+      <form class="card" data-reveal="fade" data-delay="150" data-mail-form data-email={site.email} data-key={formKey}>
         <div class="card-head">
           <span class="card-title serif">{form.title}</span>
-          <span class="label label--sm">{form.note}</span>
+          <span class="label label--sm">{formKey ? form.note : 'Opens your mail app'}</span>
         </div>
         <fieldset class="stack" style="gap:12px">
           <legend class="label label--sm">{form.topicLabel}</legend>
@@ -53,10 +55,18 @@ const { form } = contact;
           <input name="name" placeholder={form.namePlaceholder} autocomplete="name" class="serif" />
         </label>
         <label class="field">
-          <span class="label label--sm">{form.messageLabel}</span>
-          <textarea name="message" rows="4" placeholder={form.messagePlaceholder} class="serif" data-lenis-prevent></textarea>
+          <span class="label label--sm">{form.emailLabel}</span>
+          <input name="email" type="email" placeholder={form.emailPlaceholder} autocomplete="email" class="serif" required={!!formKey} />
         </label>
-        <button type="submit" class="pill pill--solid submit" data-magnetic>{form.submit}</button>
+        <label class="field">
+          <span class="label label--sm">{form.messageLabel}</span>
+          <textarea name="message" rows="4" placeholder={form.messagePlaceholder} class="serif" data-lenis-prevent required></textarea>
+        </label>
+        <input type="checkbox" name="botcheck" class="trap" tabindex="-1" autocomplete="off" aria-hidden="true" />
+        <div class="actions">
+          <button type="submit" class="pill pill--solid submit" data-magnetic data-idle={form.submit} data-busy={form.sending}>{form.submit}</button>
+          <p class="status label label--sm" role="status" aria-live="polite" data-status data-sent={form.sent} data-failed={form.failed}></p>
+        </div>
       </form>
     </div>
   </section>
@@ -77,15 +87,49 @@ const { form } = contact;
     timer = window.setTimeout(() => (copyLabel.textContent = 'Copy'), 1600);
   });
 
-  // Form → mailto: link with subject "<topic> (from <name>)".
+  // Form → Web3Forms when a key is set, else a mailto: link. Subject "<topic> (from <name>)".
   const formEl = document.querySelector<HTMLFormElement>('[data-mail-form]');
-  formEl?.addEventListener('submit', (e) => {
+  const status = formEl?.querySelector<HTMLElement>('[data-status]');
+  const submitBtn = formEl?.querySelector<HTMLButtonElement>('button[type=submit]');
+  formEl?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const data = new FormData(formEl);
+    if (data.get('botcheck')) return;
     const name = String(data.get('name') || '').trim() || 'your portfolio';
     const subject = `${data.get('topic')} (from ${name})`;
     const body = String(data.get('message') || '');
-    window.location.href = `mailto:${formEl.dataset.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const key = formEl.dataset.key;
+    if (!key) {
+      window.location.href = `mailto:${formEl.dataset.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      return;
+    }
+    submitBtn!.disabled = true;
+    submitBtn!.textContent = submitBtn!.dataset.busy!;
+    status!.textContent = '';
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          access_key: key,
+          subject,
+          from_name: 'Portfolio contact form',
+          name,
+          email: data.get('email'),
+          topic: data.get('topic'),
+          message: body,
+        }),
+      });
+      const out = await res.json();
+      if (!out.success) throw new Error(out.message);
+      formEl.reset();
+      status!.textContent = status!.dataset.sent!;
+    } catch {
+      status!.textContent = status!.dataset.failed!;
+    } finally {
+      submitBtn!.disabled = false;
+      submitBtn!.textContent = submitBtn!.dataset.idle!;
+    }
   });
 </script>
 
@@ -235,8 +279,28 @@ const { form } = contact;
   .field ::placeholder {
     color: var(--faint);
   }
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    align-items: flex-start;
+  }
   .submit {
-    align-self: flex-start;
     border: 0;
+  }
+  .submit:disabled {
+    opacity: 0.6;
+    cursor: progress;
+  }
+  .status {
+    margin: 0;
+    line-height: 1.6;
+  }
+  .status:empty {
+    display: none;
+  }
+  /* Spam trap: invisible to people, filled in by bots. */
+  .trap {
+    display: none;
   }
 </style>
