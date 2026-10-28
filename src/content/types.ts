@@ -49,6 +49,8 @@ export interface Project {
   coverPlaceholder?: string;
   /** Live Tableau Public dashboards, embedded on the project page (load on click). */
   dashboards?: Dashboard[];
+  /** Shows the interactive trek planner (map, filters, table) on the project page. */
+  planner?: boolean;
   /** Extra screenshots shown under the dashboards, e.g. a tool that can't be embedded. */
   gallery?: Gallery;
 }

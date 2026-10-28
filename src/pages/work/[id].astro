@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import ImageSlot from '@components/ImageSlot.astro';
 import StatusBadge from '@components/StatusBadge.astro';
 import TableauEmbed from '@components/TableauEmbed.astro';
+import TrekPlanner from '@components/TrekPlanner.astro';
 import QuickJump from '@components/QuickJump.astro';
 import { projects } from '@content/projects';
 import { site } from '@content/site';
@@ -31,6 +32,7 @@ const jump = [
   { id: 'approach', name: isShipped ? 'How it was built' : 'The plan', on: true },
   { id: 'results', name: 'Results', on: isShipped },
   { id: 'live', name: 'Explore it live', on: !!p.dashboards?.length },
+  { id: 'planner', name: 'Plan a trek', on: !!p.planner },
   { id: 'gallery', name: p.gallery?.title ?? '', on: !!p.gallery },
 ]
   .filter((s) => s.on)
@@ -138,6 +140,8 @@ const jump = [
   }
 
   {p.dashboards && p.dashboards.length > 0 && <TableauEmbed id="live" dashboards={p.dashboards} label={`${L()} Explore it live`} />}
+
+  {p.planner && <TrekPlanner id="planner" label={`${L()} Plan a trek`} />}
 
   {
     p.gallery && (
