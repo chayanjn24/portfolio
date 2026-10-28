@@ -55,7 +55,7 @@ const list: Omit<Project, 'num'>[] = [
       'Profiled and engineered features in SQL with CTEs, window functions and cohort analysis: revolving utilisation plus prior delinquency drove a 48% default rate, against 3% for low-risk borrowers.',
       'Benchmarked logistic regression (AUC 0.86) against XGBoost (AUC 0.87).',
       'Turned the scores into a lending policy: declining the riskiest 20% of applicants catches 73% of defaulters.',
-      'Published two cross-filtered Tableau Public dashboards and a business case study.',
+      'Published two cross-filtered Tableau Public dashboards, with filters for age, risk band, income, utilisation and past late payments, and a business case study.',
     ],
     results: [
       ['73%', 'of defaulters caught by declining the riskiest 20%'],
@@ -71,15 +71,17 @@ const list: Omit<Project, 'num'>[] = [
     dashboards: [
       {
         label: 'Portfolio model',
-        view: 'CreditDefaultRisk-PortfolioModel/CreditDefaultRiskPortfolioModel',
+        view: 'CreditDefaultRiskPortfolioModel/CreditDefaultRiskPortfolioModel',
         preview: '/images/projects/tableau-portfolio.png',
-        ratio: 1472 / 908,
+        ratio: 1200 / 800,
+        width: 1200,
       },
       {
         label: 'Risk drivers',
-        view: 'RiskDriversDeepDive/RiskDriversDeepDive',
+        view: 'RiskDriversDeepDive_17931717729410/RiskDriversDeepDive',
         preview: '/images/projects/tableau-drivers.png',
-        ratio: 1440 / 1112,
+        ratio: 1200 / 900,
+        width: 1200,
       },
     ],
   },
@@ -228,7 +230,7 @@ const list: Omit<Project, 'num'>[] = [
       'Caught a trap in the Amazon data: orders with a promotion code look like they almost never get cancelled (0.4% vs 36.1%), but the code is only added once an order goes through. Left it out of the cancellation analysis.',
       'Found returns concentrated in the East: Assam, Bihar, Jharkhand and Odisha sent back 12.5% of the seller’s shipments, twice the 6.4% elsewhere, still clear after correcting for testing 19 states at once.',
       'Simulated a ₹100 win-back test for customers lapsed 60+ days, using Blinkit’s real reorder rate (9.55%) and basket sizes, with a known true effect. The analysis found it, a sample ratio check caught a planted tracking bug, and 2,000 reruns gave a 5.5% false-positive rate.',
-      'Published a three-tab Tableau Public dashboard of the findings, and built a four-tab Metabase dashboard on a read-only login that can’t see the raw data.',
+      'Published a three-tab Tableau Public dashboard of the findings, with filters for dates, who ships, buyer, product, category, payment, segment and campaign, plus a discount what-if on the test, and built a four-tab Metabase dashboard on a read-only login that can’t see the raw data.',
     ],
     results: [
       ['+10.1%', 'more lapsed customers reordered with ₹100 off (simulated test, true effect +12%)'],
