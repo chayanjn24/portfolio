@@ -211,6 +211,21 @@ export const resume = {
       ],
     },
     {
+      title: 'Sahyadri Trek Planner',
+      id: 'trek-planner',
+      stack: 'PostGIS · SQL · Python · GeoPandas · Leaflet',
+      when: '2026',
+      links: [
+        { label: 'Live planner', href: 'https://chayangulgulia.vercel.app/work/trek-planner#planner' },
+        { label: 'GitHub', href: 'https://github.com/chayanjn24/sahyadri-treks' },
+      ],
+      points: [
+        'Built a planner for *35 fort treks near Pune* from OpenStreetMap trails, 30 m elevation data and 10 years of daily weather, with spatial SQL in PostGIS for distance from Pune, nearby treks and two-fort weekends.',
+        'Smoothed every elevation profile before measuring climb: raw 30 m data overstated it by a *median 16%*, and nearly doubled it on Malhargad, a mostly flat ridge walk.',
+        'Scored every month from rainy days and heat above 30°C: *January is best for 21 treks* and February for the other 14, while July scores between 9 and 38 out of 100.',
+      ],
+    },
+    {
       title: 'Student Performance Analysis Dashboard',
       stack: 'Power BI · DAX · SQL · ETL',
       when: '2024',
@@ -236,7 +251,7 @@ export const resume = {
   ] satisfies ResumeProject[],
 
   skills: [
-    { group: 'SQL & Python', items: 'SQL (joins, CTEs, window functions, query optimisation; MySQL, PostgreSQL, Redshift, AWS Athena, Snowflake, DuckDB), dbt (models and tests), Python (Pandas, NumPy, Scikit-learn), PySpark and Spark MLlib on Databricks' },
+    { group: 'SQL & Python', items: 'SQL (joins, CTEs, window functions, query optimisation; MySQL, PostgreSQL, PostGIS, Redshift, AWS Athena, Snowflake, DuckDB), dbt (models and tests), Python (Pandas, NumPy, Scikit-learn), PySpark and Spark MLlib on Databricks' },
     { group: 'Analysis & modelling', items: 'Data quality, reconciliation and validation, root-cause and variance analysis, cohort, funnel and RFM analysis, KPI monitoring, A/B testing (sample size, sample ratio checks, confidence intervals), forecasting (SARIMA, baselines), anomaly detection (Isolation Forest, robust z-scores), text classification (TF-IDF), clustering (KMeans), risk and backtesting (VaR with Kupiec and Christoffersen tests, GARCH, CAPM beta, Markov regimes, bootstrap), logistic regression, XGBoost, recommender systems (ALS, item-kNN), model evaluation (AUC, F1, precision and recall, NDCG and MAP)' },
     { group: 'BI & reporting', items: 'Power BI (DAX), Tableau, Looker, Metabase, KPI dashboards, Excel (Power Query, pivot tables, XLOOKUP, VBA), Google Sheets, PowerPoint, ETL automation' },
     { group: 'Business analysis', items: 'Requirements gathering, Jira ticketing, user acceptance testing (UAT), stakeholder management, cross-functional communication, executive presentations' },
