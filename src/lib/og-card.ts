@@ -47,7 +47,7 @@ type Node = { type: string; props: Record<string, unknown> & { style?: Record<st
 const el = (type: string, style: Record<string, unknown>, children?: unknown): Node => ({ type, props: { style, children } });
 
 /** The card fonts are Latin-only; swap symbols they lack so nothing renders as a box. */
-const safe = (s: string) => s.replace(/⇄/g, '·').replace(/→/g, '–');
+const safe = (s: string) => s.replace(/⇄/g, '·').replace(/→/g, '–').replace(/₹/g, 'Rs ');
 
 /** 'Row *Runner*' → spans, with the starred part in orange italic. */
 function richSpans(s: string): Node[] {
@@ -114,7 +114,7 @@ export async function renderCard(card: Card): Promise<Buffer> {
         ),
         card.stat
           ? el('div', { display: 'flex', alignItems: 'baseline', gap: 20 }, [
-              el('div', { display: 'flex', fontFamily: 'Serif', fontSize: 72, lineHeight: 1, color: C.accent }, card.stat[0]),
+              el('div', { display: 'flex', fontFamily: 'Serif', fontSize: 72, lineHeight: 1, color: C.accent }, safe(card.stat[0])),
               el('div', { display: 'flex', fontSize: 24, color: C.text2, maxWidth: 700 }, safe(card.stat[1])),
             ])
           : el('div', { display: 'flex' }),
