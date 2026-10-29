@@ -8,7 +8,7 @@ import '../styles/global.css';
 import Nav from '@components/Nav.astro';
 import Footer from '@components/Footer.astro';
 import { site } from '@content/site';
-import { ogSlug } from '@lib/og';
+import { ogSlug, ogVersion } from '@lib/og';
 
 interface Props {
   /** Page name for the browser tab, e.g. 'Work'. Omit on the home page. */
@@ -25,7 +25,7 @@ const fullTitle = title ? `${title} · ${site.fullName}` : `${site.fullName} · 
 const siteUrl = Astro.site ?? new URL(Astro.url.origin);
 const canonical = new URL(Astro.url.pathname, siteUrl).href;
 // Link-preview card made for this page at build time (src/pages/og/[...slug].png.ts).
-const ogImage = new URL(`/og/${ogSlug(Astro.url.pathname)}.png`, siteUrl).href;
+const ogImage = new URL(`/og/${ogSlug(Astro.url.pathname)}.png?v=${ogVersion}`, siteUrl).href;
 
 // Tells Google who the site is about (shown in search results and knowledge panels).
 const person = {
